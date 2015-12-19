@@ -1,18 +1,18 @@
-import HtmlWebpackPlugin from 'html-webpack-plugin';
-import webpack from 'webpack';
-import path from 'path';
+var HtmlWebpackPlugin = require('html-webpack-plugin'),
+  webpack = require('webpack'),
+  path = require('path');
 
-const production = process.env.NODE_ENV === 'production';
+var production = process.env.NODE_ENV === 'production';
 
-export default {
+module.exports = {
   entry: [
     './src/client',
-    'webpack/hot/dev-server'
+    'webpack-hot-middleware/client'
   ],
   output: {
-    path: './build',
+    path: path.join(__dirname, 'build'),
     filename: 'bundle.js',
-    publicPath: '/'
+    publicPath: '/assets/'
   },
   module: {
     loaders: [
@@ -28,19 +28,17 @@ export default {
     ]
   },
   resolve: {
+    //root: __dirname + '/node_modules',
     extensions: ['', '.js']
   },
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {NODE_ENV: JSON.stringify(process.env.NODE_ENV)}
     }),
-    new HtmlWebpackPlugin({
-      title: 'DjReRe'
-    }),
+    new webpack.optimize.OccurenceOrderPlugin(),
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NoErrorsPlugin()
   ],
   devtool: production ? 'source-map' : 'eval-source-map',
-  devServer: {
-    contentBase: './build'
-  },
   cache: false
 };
