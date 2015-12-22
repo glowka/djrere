@@ -1,5 +1,8 @@
 .DS_Store
 node_modules
+python_env
 npm-debug.log
 dist
 .idea
+db.sqlite3
+public

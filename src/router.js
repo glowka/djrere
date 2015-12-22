@@ -21,4 +21,4 @@ export default (
         <Route path="about" component={AboutUs} />
     </Route>
   </Router>
-)
+);
