@@ -6,3 +6,4 @@ dist
 .idea
 db.sqlite3
 public
+*.pyc
