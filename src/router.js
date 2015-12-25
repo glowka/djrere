@@ -9,16 +9,17 @@ import {RelayRouter} from 'react-router-relay';
 import App from './components/App';
 import LandingPage from './components/LandingPage';
 import AboutUs from './components/AboutUs';
+import AllFrontLinksQueries from './queries/AllFrontLinksQueries'
 
 const history = createHashHistory();
 
 
 export default (
-  <Router history={history}>
+  <RelayRouter history={history}>
     <Route path="/" component={App}>
-        <IndexRoute component={LandingPage} />
-        <Route path="lp" component={LandingPage} />
-        <Route path="about" component={AboutUs} />
+      <IndexRoute component={LandingPage} queries={AllFrontLinksQueries} />
+      <Route path="lp" component={LandingPage} queries={AllFrontLinksQueries} />
+      <Route path="about" component={AboutUs} />
     </Route>
-  </Router>
+  </RelayRouter>
 );

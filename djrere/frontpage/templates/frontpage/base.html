@@ -5,8 +5,12 @@
     <meta charset="UTF-8">
     <title>DjReRe FrontPage</title>
   </head>
-
   <body>
+  {% csrf_token %}
+    <script type="text/javascript">
+        var djTemplateContext = {};
+            djTemplateContext.csrftoken = '{{ csrf_token }}';
+    </script>
     {% render_bundle 'main' %}
   </body>
 </html>
