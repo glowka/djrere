@@ -10,9 +10,9 @@ var cors = require('cors');
 // Load config
 
 programInterface
-  .option('-c, --config [filepath]', 'Set relative or absolute path to config', 'webpack.config.babel')
+  .option('-c, --config [filepath]', 'Set relative or absolute path to config', './djrere_js/webpack_configs/frontpage.dev.babel')
   .parse(process.argv);
-let configPath = path.join(__dirname, programInterface.config);
+var configPath = path.join(__dirname, programInterface.config);
 console.log('Using config ', configPath);
 var config = require(configPath);
 
@@ -33,10 +33,6 @@ expressApp.use(require('webpack-dev-middleware')(webpackCompiler, {
   publicPath: config.output.publicPath
 }));
 expressApp.use(require('webpack-hot-middleware')(webpackCompiler));
-// Proxy graph backend
-//expressApp.use('/graph-api/*', requestProxy({
-//  url: 'http://localhost:8000/graph-api/*'
-//}));
 // All other handle by this server
 expressApp.get('*', function(req, res) {
   res.sendFile(path.join(__dirname, 'index.html'));

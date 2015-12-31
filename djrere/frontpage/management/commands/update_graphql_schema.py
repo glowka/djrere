@@ -17,6 +17,6 @@ class Command(BaseCommand):
         from django.conf import settings
 
         json_schema = json.dumps({'data': schema.execute(introspection_query).data})
-        filepath = os.path.join(getattr(settings, 'BASE_PATH', './'), 'schema.json')
+        filepath = os.path.join(getattr(settings, 'BASE_PATH', './'), 'var/graphql/schema.json')
         with open(filepath, mode='wb') as f:
             f.write(json_schema)

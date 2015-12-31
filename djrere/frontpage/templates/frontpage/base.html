@@ -11,6 +11,9 @@
         var djTemplateContext = {};
             djTemplateContext.csrftoken = '{{ csrf_token }}';
     </script>
-    {% render_bundle 'main' %}
+  {% if DEBUG %}
+      {% render_bundle 'dev' config='FRONTPAGE' %}
+  {% endif %}
+  {% render_bundle 'frontpage' config='FRONTPAGE' %}
   </body>
 </html>

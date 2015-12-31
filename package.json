@@ -1,14 +1,14 @@
 {
   "scripts": {
     "clean": "rimraf dist",
-    "build:webpack": "NODE_ENV=production webpack --config webpack.config.babel.js",
+    "build:webpack": "NODE_ENV=production webpack --config djrere_js/webpack_configs/frontpage.prod.babel.js",
     "build": "npm run clean && npm run build:webpack",
-    "start": "node webpack-server.js",
-    "lint": "eslint src"
+    "start": "node webpack-dev-server.js",
+    "lint": "eslint djrere_js"
   },
   "metadata": {
     "graphql": {
-      "schema": "./schema.json"
+      "schema": "./var/graphql/schema.json"
     }
   },
   "dependencies": {

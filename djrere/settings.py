@@ -109,9 +109,10 @@ STATICFILES_DIRS = (
 )
 
 WEBPACK_LOADER = {
-    'DEFAULT': {
-        'BUNDLE_DIR_NAME': os.path.join(STATIC_ROOT, 'bundles'),
-        'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
+    'FRONTPAGE': {
+        'BUNDLE_DIR_NAME': os.path.join(STATIC_ROOT, 'bundle'),
+        'STATS_FILE': os.path.join(BASE_DIR, 'var/webpack_stats/',
+                                   'frontpage.dev.json' if DEBUG else 'frontpage.prod.json'),
         'IGNORE': ['.+\.hot-update.js', '.+\.map']
     }
 }
