@@ -12,7 +12,7 @@ var cors = require('cors');
 programInterface
   .option('-c, --config [filepath]', 'Set relative or absolute path to config', 'webpack.config.babel')
   .parse(process.argv);
-var configPath = path.join(__dirname, programInterface.config);
+let configPath = path.join(__dirname, programInterface.config);
 console.log('Using config ', configPath);
 var config = require(configPath);
 

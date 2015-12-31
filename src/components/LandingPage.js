@@ -3,11 +3,15 @@ import Relay from 'react-relay';
 
 
 class LandingPage extends Component {
+  static propTypes = {
+    allFrontLinks: React.PropTypes.object.isRequired,
+    children: React.PropTypes.any
+  };
 
   renderLinks() {
-    const {allFrontLinks} = this.props;
+    const { allFrontLinks } = this.props;
 
-    return allFrontLinks.edges.map(({node}) =>
+    return allFrontLinks.edges.map(({ node }) =>
       <a href={node.href}>#{node.id} {node.href}</a>
     );
   }
@@ -17,6 +21,7 @@ class LandingPage extends Component {
       <div>
         Hi there on LP!
         {this.renderLinks()}
+        {this.props.children}
       </div>
     );
   }
@@ -35,4 +40,3 @@ export default Relay.createContainer(LandingPage, {
     `
   }
 });
-
