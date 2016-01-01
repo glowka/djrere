@@ -5,7 +5,7 @@ import os
 from django.core.management.base import BaseCommand
 from graphql.core.utils.introspection_query import introspection_query
 
-from djrere.frontpage.schema import schema
+from djrere.graphql.schema import schema
 
 
 class Command(BaseCommand):

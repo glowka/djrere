@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'webpack_loader',
     'djrere.frontpage',
+    'djrere.graphql',
 )
 
 MIDDLEWARE_CLASSES = (
