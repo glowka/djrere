@@ -1,16 +1,17 @@
 var webpack = require('webpack');
 var path = require('path');
 
-var host = 'http://localhost:3000';
 var baseDir = path.join(__dirname, '../', '../');
 
 module.exports = {
-  entry: {},
+  entry: {
+    'frontpage': path.join(baseDir, './djrere_js/frontpage/client')
+  },
 
   output: {
     path: path.join(baseDir, 'public/static/bundles/'),
     filename: '[name]-[hash].js',
-    publicPath: host + '/static/bundles/'
+    // publicPath set in inheriting files
   },
 
   module: {
@@ -43,7 +44,6 @@ module.exports = {
   cache: false,
   localConsts: {
     production: process.env.NODE_ENV === 'production',
-    host: 'http://localhost:3000',
     baseDir: baseDir
   }
 };

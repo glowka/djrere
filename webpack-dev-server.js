@@ -10,7 +10,7 @@ var cors = require('cors');
 // Load config
 
 programInterface
-  .option('-c, --config [filepath]', 'Set relative or absolute path to config', './djrere_js/webpack_configs/frontpage.dev.babel')
+  .option('-c, --config [filepath]', 'Set relative or absolute path to config', './djrere_js/webpack_configs/dev.babel')
   .parse(process.argv);
 var configPath = path.join(__dirname, programInterface.config);
 console.log('Using config ', configPath);

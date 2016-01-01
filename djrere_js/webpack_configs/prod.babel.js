@@ -3,6 +3,8 @@ var webpack = require('webpack');
 var path = require('path');
 
 
+baseConfig.output.publicPath = '/static/bundles/';
+
 baseConfig.plugins.push(
   new webpack.optimize.UglifyJsPlugin({
     compressor: {
@@ -10,6 +12,14 @@ baseConfig.plugins.push(
     }
   })
 );
+
+baseConfig.plugins.push(
+  new BundleTracker({
+    dirname: baseConfig.localConsts.baseDir,
+    filename: './var/webpack_stats/prod.json'
+  })
+);
+
 
 baseConfig.devtool = 'source-map';
 

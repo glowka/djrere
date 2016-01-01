@@ -1,8 +1,8 @@
 {
   "scripts": {
-    "clean": "rimraf dist",
-    "build:webpack": "NODE_ENV=production webpack --config djrere_js/webpack_configs/frontpage.prod.babel.js",
-    "build": "npm run clean && npm run build:webpack",
+    "clean": "rimraf public/static/bundles/",
+    "build-prod": "NODE_ENV=production webpack --config djrere_js/webpack_configs/prod.babel.js",
+    "build": "webpack --config djrere_js/webpack_configs/dev.babel.js",
     "start": "node webpack-dev-server.js",
     "lint": "eslint djrere_js"
   },
@@ -44,6 +44,7 @@
     "express": "^4.13.3",
     "express-request-proxy": "^1.0.10",
     "html-webpack-plugin": "^1.7.0",
+    "react-addons-test-utils": "^0.14.5",
     "react-transform-catch-errors": "^1.0.0",
     "react-transform-hmr": "^1.0.1",
     "redbox-react": "^1.2.0",
