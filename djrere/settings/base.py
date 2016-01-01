@@ -13,7 +13,10 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+import sys
+from django.utils.functional import SimpleLazyObject
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
@@ -112,13 +115,17 @@ STATICFILES_DIRS = (
 WEBPACK_LOADER = {
     'FRONTPAGE': {
         'BUNDLE_DIR_NAME': os.path.join(STATIC_ROOT, 'bundle'),
-        'STATS_FILE': os.path.join(BASE_DIR, 'var/webpack_stats/',
-                                   'frontpage.dev.json' if DEBUG else 'frontpage.prod.json'),
+        'STATS_FILE': os.path.join(BASE_DIR, 'var/webpack_stats/', 'frontpage.dev.json'),
         'IGNORE': ['.+\.hot-update.js', '.+\.map']
+    },
+}
+
+WEBPACK_LOADER_PROD = {
+    'FRONTPAGE': {
+        'STATS_FILE': os.path.join(BASE_DIR, 'var/webpack_stats/', 'frontpage.prod.json'),
     }
 }
 
-import os
 
 LOGGING = {
     'version': 1,

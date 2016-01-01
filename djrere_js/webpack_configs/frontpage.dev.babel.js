@@ -7,7 +7,6 @@ baseConfig.plugins.push(new BundleTracker({
   filename: './var/webpack_stats/frontpage.dev.json'
 }));
 
-console.log(path.join(baseConfig.localConsts.baseDir, './var/webpack_stats/frontpage.dev.json'));
 
 baseConfig.entry.frontpage = path.join(baseConfig.localConsts.baseDir, './djrere_js/frontpage/client');
 
