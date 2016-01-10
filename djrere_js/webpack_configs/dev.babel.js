@@ -3,10 +3,10 @@ var webpack = require('webpack');
 var BundleTracker = require('webpack-bundle-tracker');
 var path = require('path');
 
+// Specifying full host to load emulated static files from independent dev server
 var host = 'http://localhost:3000';
 
-
-baseConfig.entry.dev = 'webpack-hot-middleware/client?path=' + baseConfig.localConsts.host + '/__webpack_hmr';
+baseConfig.entry.frontpage.push('webpack-hot-middleware/client?path=' + host + '/__webpack_hmr');
 
 baseConfig.plugins.push(
   new webpack.HotModuleReplacementPlugin()
@@ -18,7 +18,6 @@ baseConfig.plugins.push(
     filename: './var/webpack_stats/dev.json'
   })
 );
-
 
 baseConfig.output.publicPath = host + '/static/bundles/';
 
