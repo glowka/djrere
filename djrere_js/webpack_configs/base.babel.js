@@ -23,20 +23,6 @@ module.exports = {
         loader: 'babel',
         include: path.join(baseDir, 'djrere_js'),
       },
-
-      // CSS
-      {
-        test: /\.css$/,
-        loader: 'style!css',
-        include: path.join(baseDir, 'djrere_js'),
-      },
-
-      // LESS
-      {
-        test: /\.less$/,
-        loader: 'style!css!less',
-        include: path.join(baseDir, 'djrere_js'),
-      }
     ]
   },
 

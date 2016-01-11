@@ -5,8 +5,25 @@ var path = require('path');
 
 // Specifying full host to load emulated static files from independent dev server
 var host = 'http://localhost:3000';
+var baseDir = baseConfig.localConsts.baseDir;
 
 baseConfig.entry.frontpage.push('webpack-hot-middleware/client?path=' + host + '/__webpack_hmr');
+
+baseConfig.module.loaders.push(
+  // CSS
+  {
+    test: /\.css$/,
+    loader: 'style!css',
+    include: path.join(baseDir, 'djrere_js'),
+  },
+
+  // LESS
+  {
+    test: /\.less$/,
+    loader: 'style!css!less',
+    include: path.join(baseDir, 'djrere_js'),
+  }
+);
 
 baseConfig.plugins.push(
   new webpack.HotModuleReplacementPlugin()
@@ -14,7 +31,7 @@ baseConfig.plugins.push(
 
 baseConfig.plugins.push(
   new BundleTracker({
-    dirname: baseConfig.localConsts.baseDir,
+    dirname: baseDir,
     filename: './var/webpack_stats/dev.json'
   })
 );

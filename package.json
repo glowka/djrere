@@ -44,6 +44,7 @@
     "eslint-plugin-react": "^3.11.3",
     "express": "^4.13.3",
     "express-request-proxy": "^1.0.10",
+    "extract-text-webpack-plugin": "^1.0.1",
     "html-webpack-plugin": "^1.7.0",
     "less": "^2.5.3",
     "less-loader": "^2.2.2",
