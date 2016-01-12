@@ -3,8 +3,6 @@ from django.utils.functional import SimpleLazyObject
 from graphene import relay
 from graphql_relay import from_global_id
 
-from . import models
-
 
 def get_node(global_id):
     node_class, local_id = from_global_id(global_id)
@@ -54,9 +52,9 @@ class Query(graphene.ObjectType):
     all_comments = relay.ConnectionField(Comment)
 
     def resolve_all_front_links(self, args, info):
-        return models.FrontLink.objects.all()
+        return [FrontLink.get_node()]
 
     def resolve_all_comments(self, args, info):
-        return models.Comment.objects.all()
+        return [Comment.get_node()]
 
 local_schema = SimpleLazyObject(lambda: graphene.Schema(query=Query))
