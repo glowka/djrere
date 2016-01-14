@@ -1,7 +1,7 @@
-Django==1.8.7
+Django==1.9.1
 django-webpack-loader==0.2.3
-graphene==0.5.0
-graphql-core==0.4.9
+graphene==0.6.0
+graphql-core==0.4.12
 graphql-django-view==1.1.0
 graphql-relay==0.3.3
 singledispatch==3.4.0.3
