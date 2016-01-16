@@ -1,9 +1,14 @@
 import graphene
 
-from ..frontpage.schema import Query as FrontpageQuery
+from ..frontpage.schema import Query as FrontpageQuery, Mutation as FrontpageMutation
 
 
 class Query(FrontpageQuery):
     pass
 
-schema = graphene.Schema(query=Query)
+
+class Mutation(FrontpageMutation):
+    pass
+
+
+schema = graphene.Schema(query=Query, mutation=Mutation)

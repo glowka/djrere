@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Relay from 'react-relay';
+import FrontLink from './FrontLink';
 
 
 class LandingPage extends Component {
@@ -8,19 +9,13 @@ class LandingPage extends Component {
     children: React.PropTypes.any
   };
 
-  renderLinks() {
-    const { allFrontLinks } = this.props;
-
-    return allFrontLinks.edges.map(({ node }) =>
-      <a href={node.href}>#{node.id} {node.href}</a>
-    );
-  }
-
   render() {
     return (
       <div>
-        Hi there on LP!
-        {this.renderLinks()}
+        Hi there on LP!<br/>
+        {this.props.allFrontLinks.edges.map(
+          ({ node: link }) => <FrontLink frontLink={link} key={link.id}/>
+        )}
         {this.props.children}
       </div>
     );
@@ -30,13 +25,14 @@ class LandingPage extends Component {
 export default Relay.createContainer(LandingPage, {
   fragments: {
     allFrontLinks: () => Relay.QL`
-      fragment on FrontLinkDefaultConnection { edges {
-        node {
-          id,
-          href
+      fragment on FrontLinkDefaultConnection {
+        edges {
+          node {
+            id,
+            ${FrontLink.getFragment('frontLink')}
+          }
         }
       }
-    }
     `
   }
 });
