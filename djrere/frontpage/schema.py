@@ -83,20 +83,25 @@ class AddFrontLink(relay.ClientIDMutation):
     class Input(object):
         href = graphene.String().NonNull
         description = graphene.String()
+        viewer = graphene.String().NonNull
 
     success = graphene.BooleanField()
-    all_front_links = relay.ConnectionField(FrontLink)
-    front_link_edge = graphene.Field(Comment.get_edge_type())
+    front_link_edge = graphene.Field(FrontLink.get_edge_type().for_node(FrontLink))
     link = graphene.Field(FrontLink)
+    viewer = graphene.Field('ViewerQuery')
 
     @classmethod
     def mutate_and_get_payload(cls, input, info):
+        schema = info.schema.graphene_schema
+        ViewerQuery = schema.get_type('ViewerQuery')
+
         link_model = models.FrontLink.objects.create(href=input.get('href'), description=input.get('description'))
         link = FrontLink(link_model)
         return cls(success=True,
                    link=link,
-                   front_link_edge=FrontLink.get_edge_type().for_node(FrontLink)(node=link, cursor=''),
-                   all_front_links=FrontLink.get_connection_type().for_node(FrontLink)())
+                   front_link_edge=FrontLink.get_edge_type().for_node(FrontLink)(node=link, cursor=""),
+                   viewer=ViewerQuery(id=input.get('viewer'))
+                   )
 
 
 class Mutation(graphene.ObjectType):

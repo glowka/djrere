@@ -3,7 +3,7 @@ import Relay from 'react-relay';
 
 class AboutUs extends Component {
   static propTypes = {
-    allFrontLinks: React.PropTypes.any,
+    viewer: React.PropTypes.any,
     children: React.PropTypes.any
   };
   render() {

@@ -7,7 +7,7 @@ import AddFrontLinkMutation from '../mutations/AddFrontLink';
 
 class LandingPage extends Component {
   static propTypes = {
-    allFrontLinks: React.PropTypes.object.isRequired,
+    viewer: React.PropTypes.object.isRequired,
     children: React.PropTypes.any
   };
   state = { inputValue: '' };
@@ -26,6 +26,7 @@ class LandingPage extends Component {
   addComment({ inputValue }) {
     Relay.Store.commitUpdate(
       new AddFrontLinkMutation({
+        viewer: this.props.viewer,
         href: inputValue
       })
     );
@@ -35,7 +36,7 @@ class LandingPage extends Component {
     return (
       <div>
         Hi there on LP!<br/>
-        {this.props.allFrontLinks.edges.map(
+        {this.props.viewer.allFrontLinks.edges.map(
           ({ node: link }) => <FrontLink frontLink={link} key={link.id}/>
         )}
         <input
@@ -51,14 +52,17 @@ class LandingPage extends Component {
 
 export default Relay.createContainer(LandingPage, {
   fragments: {
-    allFrontLinks: () => Relay.QL`
-      fragment on FrontLinkDefaultConnection {
-        edges {
-          node {
-            id,
-            ${FrontLink.getFragment('frontLink')}
+    viewer: () => Relay.QL`
+      fragment on ViewerQuery {
+        allFrontLinks(last:100) {
+          edges {
+            node {
+              id,
+              ${FrontLink.getFragment('frontLink')}
+            }
           }
-        }
+        },
+        ${AddFrontLinkMutation.getFragment('viewer')}
       }
     `
   }
