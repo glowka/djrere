@@ -79,8 +79,29 @@ class AddComment(relay.ClientIDMutation):
                    link=FrontLink(link_model))
 
 
+class AddFrontLink(relay.ClientIDMutation):
+    class Input(object):
+        href = graphene.String().NonNull
+        description = graphene.String()
+
+    success = graphene.BooleanField()
+    all_front_links = relay.ConnectionField(FrontLink)
+    front_link_edge = graphene.Field(Comment.get_edge_type())
+    link = graphene.Field(FrontLink)
+
+    @classmethod
+    def mutate_and_get_payload(cls, input, info):
+        link_model = models.FrontLink.objects.create(href=input.get('href'), description=input.get('description'))
+        link = FrontLink(link_model)
+        return cls(success=True,
+                   link=link,
+                   front_link_edge=FrontLink.get_edge_type().for_node(FrontLink)(node=link, cursor=''),
+                   all_front_links=FrontLink.get_connection_type().for_node(FrontLink)())
+
+
 class Mutation(graphene.ObjectType):
     add_comment = graphene.Field(AddComment)
+    add_front_link = graphene.Field(AddFrontLink)
 
 
 local_schema = SimpleLazyObject(lambda: graphene.Schema(query=Query, mutation=Mutation))

@@ -34,7 +34,6 @@ class FrontLink extends Component {
 
   render() {
     const { frontLink } = this.props;
-
     return (
       <div className="FrontLink-wrapper">
         <a href={frontLink.href}>Link to <b>{frontLink.href}</b> with #{frontLink.id}</a>
@@ -56,6 +55,7 @@ export default Relay.createContainer(FrontLink, {
   fragments: {
     frontLink: () => Relay.QL`
       fragment on FrontLink {
+        id,
         href,
         comments(last: 10) {
           edges {
