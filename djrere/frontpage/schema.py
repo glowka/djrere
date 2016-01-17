@@ -2,8 +2,7 @@ import graphene
 from django.utils.functional import SimpleLazyObject
 from graphene import relay
 from graphene.contrib.django import DjangoNode
-from graphql_relay import from_global_id
-
+from graphql_relay import from_global_id, to_global_id
 from . import models
 
 
@@ -104,9 +103,33 @@ class AddFrontLink(relay.ClientIDMutation):
                    )
 
 
+class DeleteFrontLink(relay.ClientIDMutation):
+    class Input(object):
+        front_link = graphene.String().NonNull
+        viewer = graphene.String().NonNull
+
+    success = graphene.BooleanField()
+    deletedFrontLinks = graphene.List(graphene.String())
+    viewer = graphene.Field('ViewerQuery')
+
+    @classmethod
+    def mutate_and_get_payload(cls, input, info):
+        front_link_id = from_global_id(input.get('front_link')).id
+        models.FrontLink.objects.filter(pk=front_link_id).delete()
+
+        schema = info.schema.graphene_schema
+        ViewerQuery = schema.get_type('ViewerQuery')
+
+        return cls(success=True,
+                   deletedFrontLinks=[to_global_id(FrontLink.__name__, front_link_id)],
+                   viewer=ViewerQuery(id=input.get('viewer'))
+                   )
+
+
 class Mutation(graphene.ObjectType):
     add_comment = graphene.Field(AddComment)
     add_front_link = graphene.Field(AddFrontLink)
+    delete_front_link = graphene.Field(DeleteFrontLink)
 
 
 local_schema = SimpleLazyObject(lambda: graphene.Schema(query=Query, mutation=Mutation))

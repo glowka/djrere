@@ -8,7 +8,8 @@ import './FrontLink.less';
 
 class FrontLink extends Component {
   static propTypes = {
-    frontLink: React.PropTypes.object.isRequired
+    frontLink: React.PropTypes.object.isRequired,
+    handleDelete: React.PropTypes.func.isRequired
   };
   state = { inputValue: '' };
 
@@ -37,10 +38,12 @@ class FrontLink extends Component {
     return (
       <div className="FrontLink-wrapper">
         <a href={frontLink.href}>Link to <b>{frontLink.href}</b> with #{frontLink.id}</a>
+        <span onClick={() => this.props.handleDelete({ link: frontLink })}>delete me</span>
         {this.props.frontLink.comments.edges.map(
           ({ node: comment }) => <Comment comment={comment} key={comment.id} />
         )}
         <input
+          placeholder="Add comment"
           onKeyDown={this.onInputKeyDown}
           onChange={this.onChange}
           value={this.state.inputValue}
@@ -64,7 +67,7 @@ export default Relay.createContainer(FrontLink, {
             }
           }
         },
-        ${AddCommentMutation.getFragment('frontLink')}
+        ${AddCommentMutation.getFragment('frontLink')},
       }
     `
   }
