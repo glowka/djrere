@@ -3,7 +3,9 @@ from django.utils.functional import SimpleLazyObject
 from graphene import relay
 from graphene.contrib.django import DjangoNode
 from graphql_relay import from_global_id, to_global_id
+
 from . import models
+from ..utils import viewer_query
 
 
 class Comment(DjangoNode):
@@ -132,4 +134,4 @@ class Mutation(graphene.ObjectType):
     delete_front_link = graphene.Field(DeleteFrontLink)
 
 
-local_schema = SimpleLazyObject(lambda: graphene.Schema(query=Query, mutation=Mutation))
+local_schema = SimpleLazyObject(lambda: graphene.Schema(query=viewer_query(Query), mutation=Mutation))
