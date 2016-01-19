@@ -1,9 +1,9 @@
 import Relay from 'react-relay';
-let djTemplateContext = window.djTemplateContext || {};
+
+const djTemplateContext = window.djTemplateContext || {};
 
 export default Relay.injectNetworkLayer(
-  // TODO: this url should be taken from env
-  new Relay.DefaultNetworkLayer('/graphql/api/', {
+  new Relay.DefaultNetworkLayer(djTemplateContext.graphqlApiUrl, {
     // Pass all credential data like cookie...
     credentials: 'same-origin',
     // We do some sensitive operations using this api, so always pass csrf header

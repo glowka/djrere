@@ -4,18 +4,22 @@ var BundleTracker = require('webpack-bundle-tracker');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var path = require('path');
 
+// Passed from base configs baseDir
+var baseDir = baseConfig.localConsts.baseDir;
 
 baseConfig.module.loaders.push(
   // CSS
   {
     test: /\.css$/,
-    loader: ExtractTextPlugin.extract("style-loader", "css-loader")
+    loader: ExtractTextPlugin.extract("style-loader", "css-loader"),
+    include: path.join(baseDir, 'djrere_js')
   },
 
   // LESS
   {
     test: /\.less$/,
-    loader: ExtractTextPlugin.extract("style-loader", "css-loader!less-loader")
+    loader: ExtractTextPlugin.extract("style-loader", "css-loader!less-loader"),
+    include: path.join(baseDir, 'djrere_js')
   }
 );
 

@@ -5,7 +5,8 @@ var baseDir = path.join(__dirname, '../', '../');
 
 module.exports = {
   entry: {
-    'frontpage': [path.join(baseDir, './djrere_js/frontpage/client')]
+    'frontpage': [path.join(baseDir, './djrere_js/frontpage/client')],
+    'graphiql': [path.join(baseDir, './djrere_js/graphiql/client')]
   },
 
   output: {
@@ -22,7 +23,7 @@ module.exports = {
         exclude: /node_modules/,
         loader: 'babel',
         include: path.join(baseDir, 'djrere_js'),
-      },
+      }
     ]
   },
 

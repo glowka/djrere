@@ -3,9 +3,10 @@ var webpack = require('webpack');
 var BundleTracker = require('webpack-bundle-tracker');
 var path = require('path');
 
+// Passed from base configs baseDir
+var baseDir = baseConfig.localConsts.baseDir;
 // Specifying full host to load emulated static files from independent dev server
 var host = 'http://localhost:3000';
-var baseDir = baseConfig.localConsts.baseDir;
 
 baseConfig.entry.frontpage.push('webpack-hot-middleware/client?path=' + host + '/__webpack_hmr');
 
@@ -14,14 +15,14 @@ baseConfig.module.loaders.push(
   {
     test: /\.css$/,
     loader: 'style!css',
-    include: path.join(baseDir, 'djrere_js'),
+    //include: path.join(baseDir, 'djrere_js'),
   },
 
   // LESS
   {
     test: /\.less$/,
     loader: 'style!css!less',
-    include: path.join(baseDir, 'djrere_js'),
+    //include: path.join(baseDir, 'djrere_js'),
   }
 );
 
