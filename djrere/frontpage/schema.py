@@ -5,7 +5,7 @@ from graphene.contrib.django import DjangoNode
 from graphql_relay import from_global_id, to_global_id
 
 from . import models
-from ..utils import viewer_query
+from ..utils.query import viewer_query
 
 
 class Comment(DjangoNode):
@@ -93,6 +93,8 @@ class AddFrontLink(relay.ClientIDMutation):
 
     @classmethod
     def mutate_and_get_payload(cls, input, info):
+        viewer_id = from_global_id(input.get('viewer')).id
+
         schema = info.schema.graphene_schema
         ViewerQuery = schema.get_type('ViewerQuery')
 
@@ -101,7 +103,7 @@ class AddFrontLink(relay.ClientIDMutation):
         return cls(success=True,
                    link=link,
                    front_link_edge=FrontLink.get_edge_type().for_node(FrontLink)(node=link, cursor=""),
-                   viewer=ViewerQuery(id=input.get('viewer'))
+                   viewer=ViewerQuery(id=viewer_id)
                    )
 
 
@@ -116,6 +118,8 @@ class DeleteFrontLink(relay.ClientIDMutation):
 
     @classmethod
     def mutate_and_get_payload(cls, input, info):
+        viewer_id = from_global_id(input.get('viewer')).id
+
         front_link_id = from_global_id(input.get('front_link')).id
         models.FrontLink.objects.filter(pk=front_link_id).delete()
 
@@ -124,7 +128,7 @@ class DeleteFrontLink(relay.ClientIDMutation):
 
         return cls(success=True,
                    deletedFrontLinks=[to_global_id(FrontLink.__name__, front_link_id)],
-                   viewer=ViewerQuery(id=input.get('viewer'))
+                   viewer=ViewerQuery(id=viewer_id)
                    )
 
 

@@ -1,7 +1,7 @@
 import graphene
 from graphene import relay
 
-from ..utils import viewer_query
+from ..utils.query import viewer_query
 from ..frontpage.schema import Query as FrontpageQuery, Mutation as FrontpageMutation
 
 

@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
 from graphql.core.utils.introspection_query import introspection_query
 
-from .schema import schema
+from ..schema import schema
 
 
 class SchemaTests(TestCase):

@@ -1,4 +1,4 @@
-from djrere.utils import update_recursive
+from ..utils.dict import update_recursive
 from .base import *
 
 DEBUG = False
