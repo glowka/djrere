@@ -1,29 +1,29 @@
 import Relay from 'react-relay';
 
-export default class AddFrontLinkMutation extends Relay.Mutation {
+export default class AddPageLinkMutation extends Relay.Mutation {
   static fragments = {
     viewer: () => Relay.QL`
       fragment on ViewerQuery {
         id
       }
     `,
-    frontLink: () => Relay.QL`
-      fragment on FrontLink {
+    pageLink: () => Relay.QL`
+      fragment on PageLink {
         id
       }
     `
   };
 
   getMutation() {
-    return Relay.QL`mutation { deleteFrontLink }`;
+    return Relay.QL`mutation { deletePageLink }`;
   }
 
   getFatQuery() {
     return Relay.QL`
-      fragment on DeleteFrontLink {
-        deletedFrontLinks,
+      fragment on DeletePageLink {
+        deletedPageLinks,
         viewer {
-          allFrontLinks
+          allPageLinks
         }
       }
     `;
@@ -35,15 +35,15 @@ export default class AddFrontLinkMutation extends Relay.Mutation {
         type: 'NODE_DELETE',
         parentName: 'viewer',
         parentID: this.props.viewer.id,
-        connectionName: 'allFrontLinks',
-        deletedIDFieldName: 'deletedFrontLinks'
+        connectionName: 'allPageLinks',
+        deletedIDFieldName: 'deletedPageLinks'
       }
     ];
   }
 
   getVariables() {
     return {
-      frontLink: this.props.frontLink.id,
+      pageLink: this.props.pageLink.id,
       viewer: this.props.viewer.id
     };
   }

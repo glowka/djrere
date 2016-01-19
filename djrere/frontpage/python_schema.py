@@ -5,8 +5,8 @@ from graphene import relay
 from . import models
 
 
-class Comment(relay.Node):
-    link = graphene.Field('FrontLink')
+class PageComment(relay.Node):
+    link = graphene.Field('PageLink')
     content = graphene.String()
 
     def resolve_content(self, args, info):
@@ -14,18 +14,18 @@ class Comment(relay.Node):
 
     def resolve_link(self, args, info):
         obj = self._root.link
-        return FrontLink(id=obj.pk, _root=obj)
+        return PageLink(id=obj.pk, _root=obj)
 
     @classmethod
     def get_node(cls, local_id, info=None):
-        obj = models.Comment.objects.get(pk=local_id)
+        obj = models.PageComment.objects.get(pk=local_id)
         return cls(id=obj.pk, _root=obj)
 
 
-class FrontLink(relay.Node):
+class PageLink(relay.Node):
     href = graphene.String()
     description = graphene.String()
-    comments = relay.ConnectionField(Comment)
+    page_comments = relay.ConnectionField(PageComment)
 
     def resolve_href(self, args, info):
         return self._root.href
@@ -33,27 +33,27 @@ class FrontLink(relay.Node):
     def resolve_description(self, args, info):
         return self._root.description
 
-    def resolve_comments(self, args, info):
-        return [Comment(id=obj.pk, _root=obj) for obj in self._root.comments.all()]
+    def resolve_page_comments(self, args, info):
+        return [PageComment(id=obj.pk, _root=obj) for obj in self._root.page_comments.all()]
 
     @classmethod
     def get_node(cls, local_id, info=None):
         print 'get_node'
-        obj = models.FrontLink.objects.get(pk=local_id)
+        obj = models.PageLink.objects.get(pk=local_id)
         return cls(id=obj.pk, _root=obj)
 
 
 class Query(graphene.ObjectType):
-    front_link = relay.NodeField(FrontLink)
-    comment = relay.NodeField(Comment)
+    page_link = relay.NodeField(PageLink)
+    page_comment = relay.NodeField(PageComment)
     node = relay.NodeField()
-    all_front_links = relay.ConnectionField(FrontLink)
-    all_comments = relay.ConnectionField(Comment)
+    all_page_links = relay.ConnectionField(PageLink)
+    all_page_comments = relay.ConnectionField(PageComment)
 
-    def resolve_all_front_links(self, args, info):
-        return [FrontLink(id=obj.pk, _root=obj) for obj in models.FrontLink.objects.all()]
+    def resolve_all_page_links(self, args, info):
+        return [PageLink(id=obj.pk, _root=obj) for obj in models.PageLink.objects.all()]
 
-    def resolve_all_comments(self, args, info):
-        return [Comment(id=obj.pk, _root=obj) for obj in models.Comment.objects.all()]
+    def resolve_all_page_comments(self, args, info):
+        return [PageComment(id=obj.pk, _root=obj) for obj in models.PageComment.objects.all()]
 
 local_schema = SimpleLazyObject(lambda: graphene.Schema(query=Query))

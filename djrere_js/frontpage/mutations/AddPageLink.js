@@ -1,6 +1,6 @@
 import Relay from 'react-relay';
 
-export default class AddFrontLinkMutation extends Relay.Mutation {
+export default class AddPageLinkMutation extends Relay.Mutation {
   static fragments = {
     viewer: () => Relay.QL`
       fragment on ViewerQuery {
@@ -10,20 +10,20 @@ export default class AddFrontLinkMutation extends Relay.Mutation {
   };
 
   getMutation() {
-    return Relay.QL`mutation { addFrontLink }`;
+    return Relay.QL`mutation { addPageLink }`;
   }
 
   getFatQuery() {
     return Relay.QL`
-      fragment on AddFrontLink {
+      fragment on AddPageLink {
         link {
           id,
           href,
           description
         }
-        frontLinkEdge,
+        pageLinkEdge,
         viewer {
-          allFrontLinks
+          allPageLinks
         }
       }
     `;
@@ -35,8 +35,8 @@ export default class AddFrontLinkMutation extends Relay.Mutation {
         type: 'RANGE_ADD',
         parentName: 'viewer',
         parentID: this.props.viewer.id,
-        connectionName: 'allFrontLinks',
-        edgeName: 'frontLinkEdge',
+        connectionName: 'allPageLinks',
+        edgeName: 'pageLinkEdge',
         rangeBehaviors: {
           '': 'append',
         }

@@ -1,26 +1,26 @@
 import Relay from 'react-relay';
 
-export default class AddCommentMutation extends Relay.Mutation {
+export default class AddPageCommentMutation extends Relay.Mutation {
   static fragments = {
-    frontLink: () => Relay.QL`
-      fragment on FrontLink {
+    pageLink: () => Relay.QL`
+      fragment on PageLink {
         id
       }
     `
   };
 
   getMutation() {
-    return Relay.QL`mutation {addComment}`;
+    return Relay.QL`mutation {addPageComment}`;
   }
 
   getFatQuery() {
     return Relay.QL`
-      fragment on AddComment {
+      fragment on AddPageComment {
         link {
           id,
-          comments
+          pageComments
         }
-        commentEdge
+        pageCommentEdge
       }
     `;
   }
@@ -30,9 +30,9 @@ export default class AddCommentMutation extends Relay.Mutation {
       {
         type: 'RANGE_ADD',
         parentName: 'link',
-        parentID: this.props.frontLink.id,
-        connectionName: 'comments',
-        edgeName: 'commentEdge',
+        parentID: this.props.pageLink.id,
+        connectionName: 'pageComments',
+        edgeName: 'pageCommentEdge',
         rangeBehaviors: {
           '': 'append',
         }
@@ -42,7 +42,7 @@ export default class AddCommentMutation extends Relay.Mutation {
 
   getVariables() {
     return {
-      linkId: this.props.frontLink.id,
+      linkId: this.props.pageLink.id,
       content: this.props.content
     };
   }

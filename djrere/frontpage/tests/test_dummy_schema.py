@@ -1,34 +1,34 @@
 from django.test import TestCase, Client
 
+from ...utils.test_cases import GraphTestMixin
 from ..dummy_schema import local_schema as schema
 
 
-class SchemaTests(TestCase):
+class SchemaTests(GraphTestMixin, TestCase):
     def setUp(self):
+        super(SchemaTests, self).setUp()
         self.client = Client()
 
-    def test_front_link(self):
+    def test_page_link(self):
         query = '''
-            query FetchFrontLink {
-                frontLink(id: "RnJvbnRMaW5rOjE=") {
+            query FetchPageLink {
+                pageLink(id: "UGFnZUxpbms6MQ==") {
                     id
                 }
             }
             '''
         expected = {
-            'frontLink': {
-                'id': 'RnJvbnRMaW5rOjE='
+            'pageLink': {
+                'id': 'UGFnZUxpbms6MQ=='
             }
         }
 
-        result = schema.execute(query)
-        self.assertFalse(result.errors)
-        self.assertDictEqual(result.data, expected)
+        self.assertGraphQuery(schema, query, expected)
 
-    def test_all_front_links(self):
+    def test_all_page_links(self):
         query = '''
-            query FetchAllFrontLinks {
-                allFrontLinks {
+            query FetchAllPageLinks {
+                allPageLinks {
                     edges {
                         node {id}
                     }
@@ -36,17 +36,15 @@ class SchemaTests(TestCase):
             }
             '''
         expected = {
-            'allFrontLinks': {
+            'allPageLinks': {
                 'edges': [
                     {
                         'node': {
-                            'id': 'RnJvbnRMaW5rOjE='
+                            'id': 'UGFnZUxpbms6MQ=='
                         }
                     }
                 ]
             }
         }
 
-        result = schema.execute(query)
-        self.assertFalse(result.errors)
-        self.assertDictEqual(result.data, expected)
+        self.assertGraphQuery(schema, query, expected)

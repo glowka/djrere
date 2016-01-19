@@ -18,21 +18,21 @@ class AwareNode(relay.Node):
         return cls(id=local_id)
 
 
-class Comment(AwareNode):
-    link = graphene.Field('FrontLink')
+class PageComment(AwareNode):
+    link = graphene.Field('PageLink')
     content = graphene.String()
 
     def resolve_content(self, args, info):
         return getattr(self, 'content', 'content_value')
 
     def resolve_link(self, args, info):
-        return getattr(self, 'link', FrontLink.get_node())
+        return getattr(self, 'link', PageLink.get_node())
 
 
-class FrontLink(AwareNode):
+class PageLink(AwareNode):
     href = graphene.String()
     description = graphene.String()
-    comments = relay.ConnectionField(Comment)
+    page_comments = relay.ConnectionField(PageComment)
 
     def resolve_href(self, args, info):
         return getattr(self, 'href', 'href_value')
@@ -40,21 +40,21 @@ class FrontLink(AwareNode):
     def resolve_description(self, args, info):
         return getattr(self, 'desc', 'desc_value')
 
-    def resolve_comments(self, args, info):
-        return [Comment.get_node()]
+    def resolve_page_comments(self, args, info):
+        return [PageComment.get_node()]
 
 
 class Query(graphene.ObjectType):
-    front_link = relay.NodeField(FrontLink)
-    comment = relay.NodeField(Comment)
+    page_link = relay.NodeField(PageLink)
+    page_comment = relay.NodeField(PageComment)
     node = relay.NodeField()
-    all_front_links = relay.ConnectionField(FrontLink)
-    all_comments = relay.ConnectionField(Comment)
+    all_page_links = relay.ConnectionField(PageLink)
+    all_page_comments = relay.ConnectionField(PageComment)
 
-    def resolve_all_front_links(self, args, info):
-        return [FrontLink.get_node()]
+    def resolve_all_page_links(self, args, info):
+        return [PageLink.get_node()]
 
-    def resolve_all_comments(self, args, info):
-        return [Comment.get_node()]
+    def resolve_all_page_comments(self, args, info):
+        return [PageComment.get_node()]
 
 local_schema = SimpleLazyObject(lambda: graphene.Schema(query=Query))

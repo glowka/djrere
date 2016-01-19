@@ -8,12 +8,12 @@ from . import models
 from ..utils.query import viewer_query
 
 
-class Comment(DjangoNode):
-    link = graphene.Field('FrontLink')
+class PageComment(DjangoNode):
+    link = graphene.Field('PageLink')
     content = graphene.String()
 
     class Meta:
-        model = models.Comment
+        model = models.PageComment
 
     def resolve_content(self, args, info):
         return self.instance.content
@@ -23,16 +23,16 @@ class Comment(DjangoNode):
 
     @classmethod
     def get_edge_type(cls):
-        return super(Comment, cls).get_edge_type().for_node(cls)
+        return super(PageComment, cls).get_edge_type().for_node(cls)
 
 
-class FrontLink(DjangoNode):
+class PageLink(DjangoNode):
     href = graphene.String()
     description = graphene.String()
-    comments = relay.ConnectionField(Comment)
+    page_comments = relay.ConnectionField(PageComment)
 
     class Meta:
-        model = models.FrontLink
+        model = models.PageLink
 
     def resolve_href(self, args, info):
         return self.instance.href
@@ -40,55 +40,55 @@ class FrontLink(DjangoNode):
     def resolve_description(self, args, info):
         return self.instance.description
 
-    def resolve_comments(self, args, info):
-        return self.instance.comments.all()
+    def resolve_page_comments(self, args, info):
+        return self.instance.page_comments.all()
 
 
 class Query(graphene.ObjectType):
-    front_link = relay.NodeField(FrontLink)
-    comment = relay.NodeField(Comment)
+    page_link = relay.NodeField(PageLink)
+    page_comment = relay.NodeField(PageComment)
     node = relay.NodeField()
-    all_front_links = relay.ConnectionField(FrontLink)
-    all_comments = relay.ConnectionField(Comment)
+    all_page_links = relay.ConnectionField(PageLink)
+    all_page_comments = relay.ConnectionField(PageComment)
 
-    def resolve_all_front_links(self, args, info):
-        return models.FrontLink.objects.all()
+    def resolve_all_page_links(self, args, info):
+        return models.PageLink.objects.all()
 
-    def resolve_all_comments(self, args, info):
-        return models.Comment.objects.all()
+    def resolve_all_page_comments(self, args, info):
+        return models.PageComment.objects.all()
 
 
-class AddComment(relay.ClientIDMutation):
+class AddPageComment(relay.ClientIDMutation):
     class Input(object):
         link_id = graphene.String().NonNull
         content = graphene.String().NonNull
 
     success = graphene.BooleanField()
-    comment = graphene.Field(Comment)
-    comment_edge = graphene.Field(Comment.get_edge_type())
-    link = graphene.Field(FrontLink)
+    page_comment = graphene.Field(PageComment)
+    page_comment_edge = graphene.Field(PageComment.get_edge_type())
+    link = graphene.Field(PageLink)
 
     @classmethod
     def mutate_and_get_payload(cls, input, info):
         link_id = from_global_id(input.get('link_id')).id
-        comment_model = models.Comment.objects.create(content=input.get('content'), link_id=link_id)
-        comment = Comment(comment_model)
-        link_model = models.FrontLink.objects.get(pk=link_id)
+        comment_model = models.PageComment.objects.create(content=input.get('content'), link_id=link_id)
+        comment = PageComment(comment_model)
+        link_model = models.PageLink.objects.get(pk=link_id)
         return cls(success=True,
-                   comment=comment,
-                   comment_edge=Comment.get_edge_type()(node=comment, cursor=''),
-                   link=FrontLink(link_model))
+                   page_comment=comment,
+                   page_comment_edge=PageComment.get_edge_type()(node=comment, cursor=''),
+                   link=PageLink(link_model))
 
 
-class AddFrontLink(relay.ClientIDMutation):
+class AddPageLink(relay.ClientIDMutation):
     class Input(object):
         href = graphene.String().NonNull
         description = graphene.String()
         viewer = graphene.String().NonNull
 
     success = graphene.BooleanField()
-    front_link_edge = graphene.Field(FrontLink.get_edge_type().for_node(FrontLink))
-    link = graphene.Field(FrontLink)
+    page_link_edge = graphene.Field(PageLink.get_edge_type().for_node(PageLink))
+    link = graphene.Field(PageLink)
     viewer = graphene.Field('ViewerQuery')
 
     @classmethod
@@ -98,44 +98,44 @@ class AddFrontLink(relay.ClientIDMutation):
         schema = info.schema.graphene_schema
         ViewerQuery = schema.get_type('ViewerQuery')
 
-        link_model = models.FrontLink.objects.create(href=input.get('href'), description=input.get('description'))
-        link = FrontLink(link_model)
+        link_model = models.PageLink.objects.create(href=input.get('href'), description=input.get('description'))
+        link = PageLink(link_model)
         return cls(success=True,
                    link=link,
-                   front_link_edge=FrontLink.get_edge_type().for_node(FrontLink)(node=link, cursor=""),
+                   page_link_edge=PageLink.get_edge_type().for_node(PageLink)(node=link, cursor=""),
                    viewer=ViewerQuery(id=viewer_id)
                    )
 
 
-class DeleteFrontLink(relay.ClientIDMutation):
+class DeletePageLink(relay.ClientIDMutation):
     class Input(object):
-        front_link = graphene.String().NonNull
+        page_link = graphene.String().NonNull
         viewer = graphene.String().NonNull
 
     success = graphene.BooleanField()
-    deletedFrontLinks = graphene.List(graphene.String())
+    deletedPageLinks = graphene.List(graphene.String())
     viewer = graphene.Field('ViewerQuery')
 
     @classmethod
     def mutate_and_get_payload(cls, input, info):
         viewer_id = from_global_id(input.get('viewer')).id
 
-        front_link_id = from_global_id(input.get('front_link')).id
-        models.FrontLink.objects.filter(pk=front_link_id).delete()
+        page_link_id = from_global_id(input.get('page_link')).id
+        models.PageLink.objects.filter(pk=page_link_id).delete()
 
         schema = info.schema.graphene_schema
         ViewerQuery = schema.get_type('ViewerQuery')
 
         return cls(success=True,
-                   deletedFrontLinks=[to_global_id(FrontLink.__name__, front_link_id)],
+                   deletedPageLinks=[to_global_id(PageLink.__name__, page_link_id)],
                    viewer=ViewerQuery(id=viewer_id)
                    )
 
 
 class Mutation(graphene.ObjectType):
-    add_comment = graphene.Field(AddComment)
-    add_front_link = graphene.Field(AddFrontLink)
-    delete_front_link = graphene.Field(DeleteFrontLink)
+    add_page_comment = graphene.Field(AddPageComment)
+    add_page_link = graphene.Field(AddPageLink)
+    delete_page_link = graphene.Field(DeletePageLink)
 
 
 local_schema = SimpleLazyObject(lambda: graphene.Schema(query=viewer_query(Query), mutation=Mutation))

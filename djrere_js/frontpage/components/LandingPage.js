@@ -1,9 +1,9 @@
 import keycode from 'keycode';
 import React, { Component } from 'react';
 import Relay from 'react-relay';
-import FrontLink from './FrontLink';
-import AddFrontLinkMutation from '../mutations/AddFrontLink';
-import DeleteFrontLinkMutation from '../mutations/DeleteFrontLink';
+import PageLink from './PageLink';
+import AddPageLinkMutation from '../mutations/AddPageLink';
+import DeletePageLinkMutation from '../mutations/DeletePageLink';
 
 
 class LandingPage extends Component {
@@ -15,7 +15,7 @@ class LandingPage extends Component {
 
   onInputKeyDown = (event) => {
     if (event.keyCode === keycode.codes.enter) {
-      this.addFrontLink({ inputValue: event.target.value });
+      this.addPageLink({ inputValue: event.target.value });
       this.setState({ inputValue: '' });
     }
   };
@@ -24,9 +24,9 @@ class LandingPage extends Component {
     this.setState({ inputValue: event.target.value });
   };
 
-  addFrontLink({ inputValue }) {
+  addPageLink({ inputValue }) {
     Relay.Store.commitUpdate(
-      new AddFrontLinkMutation({
+      new AddPageLinkMutation({
         viewer: this.props.viewer,
         href: inputValue
       })
@@ -34,11 +34,11 @@ class LandingPage extends Component {
   }
 
 
-  deleteFrontLink({ link }) {
+  deletePageLink({ link }) {
     Relay.Store.commitUpdate(
-      new DeleteFrontLinkMutation({
+      new DeletePageLinkMutation({
         viewer: this.props.viewer,
-        frontLink: link
+        pageLink: link
       })
     );
   }
@@ -53,11 +53,11 @@ class LandingPage extends Component {
           onChange={this.onChange}
           value={this.state.inputValue}
         />
-        {this.props.viewer.allFrontLinks.edges.map(
+        {this.props.viewer.allPageLinks.edges.map(
           ({ node: link }) =>
-            <FrontLink
-              frontLink={link}
-              handleDelete={this.deleteFrontLink.bind(this)}
+            <PageLink
+              pageLink={link}
+              handleDelete={this.deletePageLink.bind(this)}
               key={link.id}
             />
         )}
@@ -71,17 +71,17 @@ export default Relay.createContainer(LandingPage, {
   fragments: {
     viewer: () => Relay.QL`
       fragment on ViewerQuery {
-        allFrontLinks(last:100) {
+        allPageLinks(last:100) {
           edges {
             node {
               id,
-              ${FrontLink.getFragment('frontLink')},
-              ${DeleteFrontLinkMutation.getFragment('frontLink')}
+              ${PageLink.getFragment('pageLink')},
+              ${DeletePageLinkMutation.getFragment('pageLink')}
             }
           }
         },
-        ${AddFrontLinkMutation.getFragment('viewer')},
-        ${DeleteFrontLinkMutation.getFragment('viewer')}
+        ${AddPageLinkMutation.getFragment('viewer')},
+        ${DeletePageLinkMutation.getFragment('viewer')}
       }
     `
   }

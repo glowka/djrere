@@ -1,11 +1,11 @@
 from django.db import models
 
 
-class Comment(models.Model):
-    link = models.ForeignKey('frontpage.FrontLink', related_name='comments')
+class PageComment(models.Model):
+    link = models.ForeignKey('frontpage.PageLink', related_name='pageComments')
     content = models.TextField()
 
 
-class FrontLink(models.Model):
+class PageLink(models.Model):
     href = models.CharField(max_length=255)
     description = models.TextField()
