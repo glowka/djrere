@@ -63,7 +63,7 @@ class AddPageComment(relay.ClientIDMutation):
         link_id = graphene.String().NonNull
         content = graphene.String().NonNull
 
-    success = graphene.BooleanField()
+    success = graphene.Boolean()
     page_comment = graphene.Field(PageComment)
     page_comment_edge = graphene.Field(PageComment.get_edge_type())
     link = graphene.Field(PageLink)
@@ -86,7 +86,7 @@ class AddPageLink(relay.ClientIDMutation):
         description = graphene.String()
         viewer = graphene.String().NonNull
 
-    success = graphene.BooleanField()
+    success = graphene.Boolean()
     page_link_edge = graphene.Field(PageLink.get_edge_type().for_node(PageLink))
     link = graphene.Field(PageLink)
     viewer = graphene.Field('ViewerQuery')
@@ -112,7 +112,7 @@ class DeletePageLink(relay.ClientIDMutation):
         page_link = graphene.String().NonNull
         viewer = graphene.String().NonNull
 
-    success = graphene.BooleanField()
+    success = graphene.Boolean()
     deletedPageLinks = graphene.List(graphene.String())
     viewer = graphene.Field('ViewerQuery')
 

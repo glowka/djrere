@@ -1,8 +1,7 @@
-import { createHistory, createHashHistory } from 'history';
+import { createHashHistory } from 'history';
 import React from 'react';
-import ReactDOM from 'react-dom';
 
-import { Router, Route, IndexRoute } from 'react-router';
+import { Route, IndexRoute } from 'react-router';
 import { RelayRouter } from 'react-router-relay';
 import App from './components/App';
 import LandingPage from './components/LandingPage';

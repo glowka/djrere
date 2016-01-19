@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import Relay from 'react-relay';
 import Footer from './Footer';
 import Header from './Header';
-import AboutUs from './AboutUs';
-import LandingPage from './LandingPage';
 
 
 function range(start, count) {
