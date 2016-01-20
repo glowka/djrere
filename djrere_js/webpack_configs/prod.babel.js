@@ -12,14 +12,16 @@ baseConfig.module.loaders.push(
   {
     test: /\.css$/,
     loader: ExtractTextPlugin.extract("style-loader", "css-loader"),
-    include: path.join(baseDir, 'djrere_js')
+    // As for now importing also style of any external module, uncomment to change it
+    // include: path.join(baseDir, 'djrere_js')
   },
 
   // LESS
   {
     test: /\.less$/,
     loader: ExtractTextPlugin.extract("style-loader", "css-loader!less-loader"),
-    include: path.join(baseDir, 'djrere_js')
+    // As for now importing also style of any external module, uncomment to change it
+    // include: path.join(baseDir, 'djrere_js')
   }
 );
 

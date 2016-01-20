@@ -22,6 +22,7 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         loader: 'babel',
+        // Load using babel only own modules
         include: path.join(baseDir, 'djrere_js'),
       }
     ]

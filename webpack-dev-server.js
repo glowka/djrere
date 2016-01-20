@@ -10,7 +10,7 @@ var cors = require('cors');
 // Load config
 
 programInterface
-  .option('-c, --config [filepath]', 'Set relative or absolute path to config', './djrere_js/webpack_configs/dev.babel')
+  .option('-c, --config <filepath>', 'Set relative or absolute path to config')
   .parse(process.argv);
 var configPath = path.join(__dirname, programInterface.config);
 console.log('Using config ', configPath);
@@ -35,7 +35,7 @@ expressApp.use(require('webpack-dev-middleware')(webpackCompiler, {
 expressApp.use(require('webpack-hot-middleware')(webpackCompiler));
 // All other handle by this server
 expressApp.get('*', function(req, res) {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.send('no file to serve');
 });
 
 // Listen

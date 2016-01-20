@@ -3,7 +3,7 @@
     "clean": "rimraf public/static/bundles/",
     "build-prod": "NODE_ENV=production webpack --config djrere_js/webpack_configs/prod.babel.js",
     "build": "webpack --config djrere_js/webpack_configs/dev.babel.js",
-    "start": "node webpack-dev-server.js",
+    "start": "node webpack-dev-server.js --config djrere_js/webpack_configs/dev.babel.js",
     "lint": "eslint djrere_js"
   },
   "metadata": {
