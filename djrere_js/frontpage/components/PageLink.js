@@ -44,8 +44,8 @@ class PageLink extends Component {
         )}
         <input
           placeholder="Add pageComment"
-          onKeyDown={this.onInputKeyDown}
-          onChange={this.onChange}
+          onKeyDown={this.onInputKeyDown.bind(this)}
+          onChange={this.onChange.bind(this)}
           value={this.state.inputValue}
         />
       </div>

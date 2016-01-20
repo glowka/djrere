@@ -49,8 +49,8 @@ class LandingPage extends Component {
         Hi there on LP!
         <input
           placeholder="Add link"
-          onKeyDown={this.onInputKeyDown}
-          onChange={this.onChange}
+          onKeyDown={this.onInputKeyDown.bind(this)}
+          onChange={this.onChange.bind(this)}
           value={this.state.inputValue}
         />
         {this.props.viewer.allPageLinks.edges.map(
