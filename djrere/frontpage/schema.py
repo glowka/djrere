@@ -3,14 +3,24 @@ from django.utils.functional import SimpleLazyObject
 from graphene import relay
 from graphene.contrib.django import DjangoNode
 from graphql_relay import from_global_id, to_global_id
+from graphql_relay.connection.arrayconnection import offset_to_cursor
 
 from . import models
 from ..utils.query import viewer_query
 
 
+class Connection(relay.Connection):
+    count = graphene.IntField()
+
+    def resolve_count(self, args, info):
+        return self._connection_data.count()
+
+
 class PageComment(DjangoNode):
     link = graphene.Field('PageLink')
     content = graphene.String()
+
+    connection_type = Connection
 
     class Meta:
         model = models.PageComment
@@ -30,6 +40,8 @@ class PageLink(DjangoNode):
     href = graphene.String()
     description = graphene.String()
     page_comments = relay.ConnectionField(PageComment)
+
+    connection_type = Connection
 
     class Meta:
         model = models.PageLink
@@ -70,13 +82,23 @@ class AddPageComment(relay.ClientIDMutation):
 
     @classmethod
     def mutate_and_get_payload(cls, input, info):
-        link_id = from_global_id(input.get('link_id')).id
-        comment_model = models.PageComment.objects.create(content=input.get('content'), link_id=link_id)
-        comment = PageComment(comment_model)
-        link_model = models.PageLink.objects.get(pk=link_id)
+        try:
+            schema = info.schema.graphene_schema
+
+            link_global_id = input.get('link_id')
+            link_id = from_global_id(link_global_id).id
+            offset = schema.execute('query {viewer { pageLink(id: "%s") { pageComments {count}}}}' % link_global_id) \
+                .data['viewer']['pageLink']['pageComments']['count']
+
+            comment_model = models.PageComment.objects.create(content=input.get('content'), link_id=link_id)
+            comment = PageComment(comment_model)
+            link_model = models.PageLink.objects.get(pk=link_id)
+        except Exception as e:
+            print(e)
         return cls(success=True,
                    page_comment=comment,
-                   page_comment_edge=PageComment.get_edge_type()(node=comment, cursor=''),
+                   page_comment_edge=PageComment.get_edge_type()(node=comment,
+                                                                 cursor=offset_to_cursor(offset)),
                    link=PageLink(link_model))
 
 
@@ -93,16 +115,18 @@ class AddPageLink(relay.ClientIDMutation):
 
     @classmethod
     def mutate_and_get_payload(cls, input, info):
-        viewer_id = from_global_id(input.get('viewer')).id
-
         schema = info.schema.graphene_schema
+
+        viewer_id = from_global_id(input.get('viewer')).id
         ViewerQuery = schema.get_type('ViewerQuery')
+        offset = schema.execute('query {viewer { allPageLinks {count}}}').data['viewer']['allPageLinks']['count']
 
         link_model = models.PageLink.objects.create(href=input.get('href'), description=input.get('description'))
         link = PageLink(link_model)
         return cls(success=True,
                    link=link,
-                   page_link_edge=PageLink.get_edge_type().for_node(PageLink)(node=link, cursor=""),
+                   page_link_edge=PageLink.get_edge_type().for_node(PageLink)(node=link,
+                                                                              cursor=offset_to_cursor(offset)),
                    viewer=ViewerQuery(id=viewer_id)
                    )
 

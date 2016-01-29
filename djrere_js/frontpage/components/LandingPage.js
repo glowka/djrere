@@ -33,7 +33,6 @@ class LandingPage extends Component {
     );
   }
 
-
   deletePageLink({ link }) {
     Relay.Store.commitUpdate(
       new DeletePageLinkMutation({
