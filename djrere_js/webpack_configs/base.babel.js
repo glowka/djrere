@@ -1,4 +1,5 @@
 var webpack = require('webpack');
+var CommonsChunkPlugin = require("webpack/lib/optimize/CommonsChunkPlugin");
 var path = require('path');
 
 var baseDir = path.join(__dirname, '../', '../');
@@ -37,7 +38,9 @@ module.exports = {
       'process.env': { NODE_ENV: JSON.stringify(process.env.NODE_ENV) }
     }),
 
-    new webpack.optimize.OccurenceOrderPlugin()
+    new webpack.optimize.OccurenceOrderPlugin(),
+
+    new CommonsChunkPlugin('commons', "commons-[hash].js")
   ],
 
   cache: false,

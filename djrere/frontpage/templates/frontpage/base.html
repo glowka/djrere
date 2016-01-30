@@ -12,6 +12,7 @@
       djTemplateContext.csrftoken = '{{ csrf_token }}';
       djTemplateContext.graphqlApiUrl = '{% url 'graphql:api' %}';
   </script>
+  {% render_bundle 'commons' %}
   {% render_bundle 'frontpage' %}
   </body>
 </html>
