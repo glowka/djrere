@@ -1,4 +1,4 @@
-var baseConfig = require('./base.babel');
+var baseConfig = require('./base.config');
 var webpack = require('webpack');
 var BundleTracker = require('webpack-bundle-tracker');
 var path = require('path');

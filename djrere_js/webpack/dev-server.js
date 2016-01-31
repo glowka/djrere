@@ -1,6 +1,5 @@
 var path = require('path');
 var express = require('express');
-var requestProxy = require('express-request-proxy');
 var webpack = require('webpack');
 var programInterface = require('commander');
 var url = require('url');
@@ -12,7 +11,7 @@ var cors = require('cors');
 programInterface
   .option('-c, --config <filepath>', 'Set relative or absolute path to config')
   .parse(process.argv);
-var configPath = path.join(__dirname, programInterface.config);
+var configPath = path.join(__dirname, '../../', programInterface.config);
 console.log('Using config ', configPath);
 var config = require(configPath);
 

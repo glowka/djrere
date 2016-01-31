@@ -1,9 +1,9 @@
 {
   "scripts": {
     "clean": "rimraf public/static/bundles/",
-    "build-prod": "NODE_ENV=production webpack --config djrere_js/webpack_configs/prod.babel.js",
-    "build": "webpack --config djrere_js/webpack_configs/dev.babel.js",
-    "start": "node webpack-dev-server.js --config djrere_js/webpack_configs/dev.babel.js",
+    "build-prod": "NODE_ENV=production webpack --config djrere_js/webpack/prod.config.js",
+    "build": "webpack --config djrere_js/webpack/dev.config.js",
+    "start": "node ./djrere_js/webpack/dev-server.js --config djrere_js/webpack/dev.config.js",
     "lint": "eslint djrere_js"
   },
   "metadata": {
@@ -42,6 +42,7 @@
     "css-loader": "^0.23.1",
     "eslint": "^1.10.3",
     "eslint-config-airbnb": "^2.1.1",
+    "eslint-config-defaults": "^8.0.2",
     "eslint-plugin-babel": "^3.0.0",
     "eslint-plugin-react": "^3.11.3",
     "express": "^4.13.3",
