@@ -37,6 +37,11 @@
       "plugins": [
         "babel-relay-plugin-loader"
       ]
+    },
+    "test": {
+      "plugins": [
+        "babel-relay-plugin-loader"
+      ]
     }
   }
 }
