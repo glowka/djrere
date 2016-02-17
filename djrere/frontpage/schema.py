@@ -1,3 +1,4 @@
+# coding=utf-8
 import graphene
 from django.utils.functional import SimpleLazyObject
 from graphene import relay
@@ -50,18 +51,34 @@ class PageLink(DjangoNode):
         return self.instance.href
 
     def resolve_description(self, args, info):
-        return self.instance.description
+        return self.instance.description + u"cuś"
 
     def resolve_page_comments(self, args, info):
         return self.instance.page_comments.all()
 
 
+class MyObject(graphene.ObjectType):
+    str_content = graphene.String()
+    str_length = graphene.Int()
+
+    def resolve_str_content(self, args, info):
+        return self._root
+
+    def resolve_str_length(self, args, info):
+        return len(self._root)
+
+
 class Query(graphene.ObjectType):
+    my_str = graphene.Field(MyObject)
+
     page_link = relay.NodeField(PageLink)
     page_comment = relay.NodeField(PageComment)
     node = relay.NodeField()
     all_page_links = relay.ConnectionField(PageLink)
     all_page_comments = relay.ConnectionField(PageComment)
+
+    def resolve_my_str(self, args, info):
+        return 'fdsfsd'
 
     def resolve_all_page_links(self, args, info):
         return models.PageLink.objects.all()
