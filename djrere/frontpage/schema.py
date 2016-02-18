@@ -51,7 +51,7 @@ class PageLink(DjangoNode):
         return self.instance.href
 
     def resolve_description(self, args, info):
-        return self.instance.description + u"cuś"
+        return self.instance.description
 
     def resolve_page_comments(self, args, info):
         return self.instance.page_comments.all()

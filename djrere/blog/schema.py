@@ -74,4 +74,4 @@ class BlogQuery(graphene.ObjectType):
 class BlogMutation(graphene.ObjectType):
     pass
 
-local_schema = SimpleLazyObject(lambda: graphene.Schema(query=viewer_query(BlogQuery), mutation=BlogMutation))
+local_schema = SimpleLazyObject(lambda: graphene.Schema(query=viewer_query(BlogQuery)))
