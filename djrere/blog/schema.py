@@ -10,9 +10,16 @@ from . import models
 from ..utils.query import viewer_query
 
 
+class DjangoConnection(relay.Connection):
+    total_count = graphene.Int()
+
+    def resolve_total_count(self, args, info):
+        return self._connection_data.count()
+
+
 class Article(graphene.ObjectType):
-    title = graphene.StringField()
-    content = graphene.StringField()
+    title = graphene.String()
+    content = graphene.String()
 
     def resolve_title(self, args, info):
         return self._root.title
@@ -22,8 +29,10 @@ class Article(graphene.ObjectType):
 
 
 class ArticleNode(relay.Node):
-    title = graphene.StringField()
-    content = graphene.StringField()
+    title = graphene.String()
+    content = graphene.String()
+
+    connection_type = DjangoConnection
 
     def resolve_title(self, args, info):
         return self._root.title
@@ -43,39 +52,23 @@ class ArticleDjangoNode(DjangoNode):
 
 
 class BlogQuery(graphene.ObjectType):
-    """
-    query {
-      viewer {
-        blog {
-          myStr
-          article(localId: 1) {
-            content, title
-          }
-          articleNode(id: "QXJ0aWNsZU5vZGU6MQ==") {
-            content, title, id
-          }
-          articleDjangoNode(id: "QXJ0aWNsZURqYW5nb05vZGU6MQ==") {
-            content, title, id
-          }
-          articleDjangoNode(title: "title") {
-            content, title, id
-          }
-        }
-      }
-    }
-
-    """
     my_str = graphene.StringField()
     article = graphene.Field(Article, args={'local_id': graphene.Int().NonNull})
-    articleNode = relay.NodeField(ArticleNode)
-    articleDjangoNode = relay.NodeField(ArticleDjangoNode)
+    article2 = graphene.Field(Article, args={'local_id': graphene.Int().NonNull},
+                              resolver=lambda self, args, info: models.Article.objects.get(pk=args.get('local_id')))
+    article_node = relay.NodeField(ArticleNode)
+    article_django_node = relay.NodeField(ArticleDjangoNode)
+
+    articles = relay.ConnectionField(ArticleNode)
 
     def resolve_my_str(self, args, info):
         return 'my test string'
 
     def resolve_article(self, args, info):
-        print args
         return models.Article.objects.get(pk=args.get('local_id'))
+
+    def resolve_articles(self, args, info):
+        return models.Article.objects.filter()
 
 
 class BlogMutation(graphene.ObjectType):

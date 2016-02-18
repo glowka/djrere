@@ -1,0 +1,28 @@
+query {
+  viewer {
+    blog {
+      myStr
+      article(localId: 1) {
+        content, title
+      }
+      articleNode(id: "QXJ0aWNsZU5vZGU6MQ==") {
+        content, title, id
+      }
+      articleDjangoNode(id: "QXJ0aWNsZURqYW5nb05vZGU6MQ==") {
+        content, title, id
+      }
+      articles(first: 10) {
+       	edges {
+          node {
+            id
+          }
+        }
+        pageInfo {
+          hasNextPage,
+          hasPreviousPage
+        },
+        totalCount
+      }
+    }
+  }
+}
