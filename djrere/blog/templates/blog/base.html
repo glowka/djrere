@@ -1,0 +1,18 @@
+{% load render_bundle from webpack_loader %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>DjReRe Blog</title>
+  </head>
+  <body>
+  {% csrf_token %}
+  <script type="text/javascript">
+      var djTemplateContext = {};
+      djTemplateContext.csrftoken = '{{ csrf_token }}';
+      djTemplateContext.graphqlApiUrl = '{% url 'graphql:api' %}';
+  </script>
+  {% render_bundle 'commons' %}
+  {% render_bundle 'blog' %}
+  </body>
+</html>

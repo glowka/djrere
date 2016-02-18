@@ -7,6 +7,7 @@ var baseDir = path.join(__dirname, '../', '../');
 module.exports = {
   entry: {
     'frontpage': [path.join(baseDir, './djrere_js/frontpage/client')],
+    'blog': [path.join(baseDir, './djrere_js/blog/client')],
     'graphiql': [path.join(baseDir, './djrere_js/graphiql/client')]
   },
 
