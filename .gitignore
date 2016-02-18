@@ -1,10 +1,11 @@
 .DS_Store
-node_modules
-python_env
+node_modules/
+python_env/
 npm-debug.log
-dist
-.idea
+dist/
+.idea/
 db.sqlite3
-public
+public/
 *.pyc
-var
+var/
+env/
