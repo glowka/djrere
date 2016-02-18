@@ -8,6 +8,6 @@ import BlogRoute from './route'
 export default (
   <Relay.RootContainer
     Component={Blog}
-    route={new BlogRoute}
+    route={new BlogRoute()}
   />
 );
