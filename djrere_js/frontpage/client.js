@@ -10,22 +10,3 @@ mountNode.id = 'client-root';
 
 ReactDOM.render(router, mountNode);
 
-//
-//class App extends Component {
-//  render() {
-//    return (
-//      this.props.children
-//    );
-//  }
-//}
-//class AppRoot extends Component {
-//  render() {
-//    return (
-//      <Route path="/" component={App}>
-//        <About></About>
-//        <Inbox></Inbox>
-//        dfgdf
-//      </RouteApp>
-//    );
-//  }
-//}

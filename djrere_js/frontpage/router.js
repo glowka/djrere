@@ -21,3 +21,31 @@ export default (
     </Route>
   </RelayRouter>
 );
+
+
+//import { createHashHistory } from 'history';
+//import React from 'react';
+//
+//import { Route, IndexRoute } from 'react-router';
+//import { RelayRouter } from 'react-router-relay';
+//import App from './components/App';
+//import LandingPage from './components/LandingPage';
+//import AboutUs from './components/AboutUs';
+//import ViewerQueries from './queries/ViewerQueries';
+//import EmptyQueries from './queries/EmptyQueries';
+//
+//const history = createHashHistory();
+//
+//var routes = [
+//  {
+//    path: '/',
+//    component: App,
+//    queries: EmptyQueries
+//  }
+//];
+//
+//
+//export default (
+//  <RelayRouter history={history} routes={routes}>
+//  </RelayRouter>
+//);

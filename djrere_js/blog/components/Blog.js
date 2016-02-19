@@ -7,7 +7,7 @@ import Article from './Article';
 
 class Blog extends Component {
   static propTypes = {
-    blog: React.PropTypes.object.isRequired
+    viewer: React.PropTypes.object.isRequired
   };
   render() {
     return (
@@ -17,6 +17,7 @@ class Blog extends Component {
           {this.props.viewer.blog.articles.edges.map(
             ({ node: article }) => <Article article={article} key={article.id} />
           )}
+          {this.props.children}
         </ul>
         <Footer />
       </div>
