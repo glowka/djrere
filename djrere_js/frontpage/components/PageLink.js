@@ -3,6 +3,9 @@ import React, { Component } from 'react';
 import Relay from 'react-relay';
 import AddPageCommentMutation from '../mutations/AddPageComment';
 import PageComment from './PageComment';
+
+import { fixObjKey } from '../../utils/relay-fixes';
+
 import './PageLink.less';
 
 
@@ -32,6 +35,20 @@ class PageLink extends Component {
       })
     );
   }
+
+  fixRelayProps(props) {
+    // Looks like relay is buggy here, fixing by setting proper key
+    fixObjKey(props.pageLink, 'pageComments')
+  }
+
+  componentWillMount() {
+    this.fixRelayProps(this.props)
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    this.fixRelayProps(nextProps)
+  }
+
 
   render() {
     const { pageLink } = this.props;

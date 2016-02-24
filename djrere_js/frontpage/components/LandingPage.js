@@ -5,10 +5,12 @@ import PageLink from './PageLink';
 import AddPageLinkMutation from '../mutations/AddPageLink';
 import DeletePageLinkMutation from '../mutations/DeletePageLink';
 
+import { fixObjKey } from '../../utils/relay-fixes';
+
 
 class LandingPage extends Component {
   static propTypes = {
-    viewer: React.PropTypes.object.isRequired,
+    user: React.PropTypes.object.isRequired,
     children: React.PropTypes.any
   };
   state = { inputValue: '' };
@@ -27,7 +29,7 @@ class LandingPage extends Component {
   addPageLink({ inputValue }) {
     Relay.Store.commitUpdate(
       new AddPageLinkMutation({
-        viewer: this.props.viewer,
+        user: this.props.user,
         href: inputValue
       })
     );
@@ -36,11 +38,25 @@ class LandingPage extends Component {
   deletePageLink({ link }) {
     Relay.Store.commitUpdate(
       new DeletePageLinkMutation({
-        viewer: this.props.viewer,
+        user: this.props.user,
         pageLink: link
       })
     );
   }
+
+  fixRelayProps(props) {
+    // Looks like relay is buggy here, fixing by setting proper key
+    fixObjKey(props.user.frontpage, 'allPageLinks')
+  }
+
+  componentWillMount() {
+    this.fixRelayProps(this.props)
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    this.fixRelayProps(nextProps)
+  }
+
 
   render() {
     return (
@@ -52,7 +68,7 @@ class LandingPage extends Component {
           onChange={this.onChange.bind(this)}
           value={this.state.inputValue}
         />
-        {this.props.viewer.allPageLinks.edges.map(
+        {this.props.user.frontpage.allPageLinks.edges.map(
           ({ node: link }) =>
             <PageLink
               pageLink={link}
@@ -68,19 +84,21 @@ class LandingPage extends Component {
 
 export default Relay.createContainer(LandingPage, {
   fragments: {
-    viewer: () => Relay.QL`
-      fragment on ViewerQuery {
-        allPageLinks(last:100) {
-          edges {
-            node {
-              id,
-              ${PageLink.getFragment('pageLink')},
-              ${DeletePageLinkMutation.getFragment('pageLink')}
+    user: () => Relay.QL`
+      fragment on User {
+        frontpage {
+          allPageLinks(last:100) {
+            edges {
+              node {
+                id,
+                ${PageLink.getFragment('pageLink')},
+                ${DeletePageLinkMutation.getFragment('pageLink')}
+              }
             }
           }
-        },
-        ${AddPageLinkMutation.getFragment('viewer')},
-        ${DeletePageLinkMutation.getFragment('viewer')}
+        }
+        ${AddPageLinkMutation.getFragment('user')}
+        ${DeletePageLinkMutation.getFragment('user')}
       }
     `
   }

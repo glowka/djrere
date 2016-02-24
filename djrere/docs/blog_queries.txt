@@ -1,5 +1,5 @@
 query {
-  viewer {
+  user {
     blog {
       myStr
       article(localId: 1) {

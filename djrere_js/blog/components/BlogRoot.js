@@ -2,11 +2,11 @@ import React from 'react';
 import Relay from 'react-relay';
 
 import Blog from './Blog';
-import ViewerQueries from '../queries/ViewerQueries';
+import UserQueries from '../queries/UserQueries';
 
 class BlogRoute extends Relay.Route {
   static routeName = 'BlogRoute';
-  static queries = ViewerQueries;
+  static queries = UserQueries;
 }
 
 export default (

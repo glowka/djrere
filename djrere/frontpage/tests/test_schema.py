@@ -22,7 +22,7 @@ class SchemaTests(GraphTestMixin, TestCase):
         link_gid = to_global_id(link.__class__.__name__, link.pk)
         query = '''
             query FetchPageLink {
-                viewer {
+                user {
                     pageLink(id: "%s") {
                         id,
                         href
@@ -31,7 +31,7 @@ class SchemaTests(GraphTestMixin, TestCase):
             }
             ''' % link_gid
         expected = {
-            'viewer': {
+            'user': {
                 'pageLink': {
                     'id': link_gid,
                     'href': link.href
@@ -49,7 +49,7 @@ class SchemaTests(GraphTestMixin, TestCase):
 
         query = '''
             query FetchPageLink {
-                viewer {
+                user {
                     pageLink(id: "%s") {
                         id,
                         pageComments {
@@ -63,7 +63,7 @@ class SchemaTests(GraphTestMixin, TestCase):
             ''' % link_gid
 
         expected = {
-            'viewer': {
+            'user': {
                 'pageLink': {
                     'id': link_gid,
                     'pageComments': {
@@ -85,7 +85,7 @@ class SchemaTests(GraphTestMixin, TestCase):
 
         query = '''
             query FetchPageLink {
-                viewer {
+                user {
                     pageLink(id: "%s") {
                         id,
                         pageComments {
@@ -102,7 +102,7 @@ class SchemaTests(GraphTestMixin, TestCase):
             ''' % link_gid
 
         expected = {
-            'viewer': {
+            'user': {
                 'pageLink': {
                     'id': link_gid,
                     'pageComments': {
@@ -129,7 +129,7 @@ class SchemaTests(GraphTestMixin, TestCase):
 
         query = '''
             query FetchPageComment {
-                viewer {
+                user {
                     pageComment(id: "%s") {
                         id,
                         content,
@@ -139,7 +139,7 @@ class SchemaTests(GraphTestMixin, TestCase):
             }
             ''' % comment_gid
         expected = {
-            'viewer': {
+            'user': {
                 'pageComment': {
                     'id': comment_gid,
                     'content': comment.content,
@@ -156,7 +156,7 @@ class SchemaTests(GraphTestMixin, TestCase):
 
         query = '''
             query FetchAllPageLinks {
-                viewer {
+                user {
                     allPageLinks {
                         edges {
                             node {id}
@@ -166,7 +166,7 @@ class SchemaTests(GraphTestMixin, TestCase):
             }
             '''
         expected = {
-            'viewer': {
+            'user': {
                 'allPageLinks': {
                     'edges': [
                         {'node': {'id': link_gid}}
@@ -185,7 +185,7 @@ class SchemaTests(GraphTestMixin, TestCase):
 
         query = '''
             query FetchAllPageComments {
-                viewer {
+                user {
                     allPageComments {
                         edges {
                             node {
@@ -199,7 +199,7 @@ class SchemaTests(GraphTestMixin, TestCase):
             }
             '''
         expected = {
-            'viewer': {
+            'user': {
                 'allPageComments': {
                     'edges': [
                         {
@@ -256,21 +256,21 @@ class SchemaTests(GraphTestMixin, TestCase):
     def test_add_page_link(self):
         href = 'www.example.com'
         description = 'description text'
-        viewer_gid = to_global_id('ViewerQuery', '0')
+        user_gid = to_global_id('User', '0')
 
         query = '''
             mutation {
-                addPageLink(input: {clientMutationId: "mutation1", viewer: "%s", href: "%s", description: "%s"}) {
+                addPageLink(input: {clientMutationId: "mutation1", user: "%s", href: "%s", description: "%s"}) {
                     success,
                     pageLinkEdge {
                         node {
                             href, description
                         }
                     },
-                    viewer { id }
+                    user { id }
                 }
             }
-            ''' % (viewer_gid, href, description)
+            ''' % (user_gid, href, description)
         expected = {
             'addPageLink': {
                 'success': True,
@@ -280,8 +280,8 @@ class SchemaTests(GraphTestMixin, TestCase):
                         'description': description
                     }
                 },
-                'viewer': {
-                    'id': viewer_gid
+                'user': {
+                    'id': user_gid
                 }
             }
         }
@@ -290,23 +290,23 @@ class SchemaTests(GraphTestMixin, TestCase):
     def test_delete_page_link(self):
         link = self.create_page_link()
         link_gid = to_global_id(link.__class__.__name__, link.pk)
-        viewer_gid = to_global_id('ViewerQuery', '0')
+        user_gid = to_global_id('User', '0')
 
         query = '''
             mutation {
-                deletePageLink(input: {clientMutationId: "mutation1", viewer: "%s", pageLink: "%s"}) {
+                deletePageLink(input: {clientMutationId: "mutation1", user: "%s", pageLink: "%s"}) {
                     success,
                     deletedPageLinks,
-                    viewer { id }
+                    user { id }
                 }
             }
-            ''' % (viewer_gid, link_gid)
+            ''' % (user_gid, link_gid)
         expected = {
             'deletePageLink': {
                 'success': True,
                 'deletedPageLinks': [link_gid],
-                'viewer': {
-                    'id': viewer_gid
+                'user': {
+                    'id': user_gid
                 }
             }
         }

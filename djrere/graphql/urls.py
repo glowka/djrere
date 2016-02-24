@@ -5,6 +5,6 @@ from . import views
 from .schema import schema
 
 urlpatterns = [
-    url(r'^api/', GraphQLView.as_view(schema=schema), name='api'),
+    url(r'^api/', views.UserGraphQLView.as_view(schema=schema), name='api'),
     url(r'^graphiql/', views.graphiql, name='graphiql')
 ]

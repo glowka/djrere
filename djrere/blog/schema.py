@@ -7,7 +7,7 @@ from graphql_relay import from_global_id, to_global_id
 from graphql_relay.connection.arrayconnection import offset_to_cursor
 
 from . import models
-from ..utils.query import viewer_query
+from ..utils.query import user_wrapped_query
 
 
 class DjangoConnection(relay.Connection):
@@ -51,7 +51,7 @@ class ArticleDjangoNode(DjangoNode):
         only_fields = ['title', 'content']
 
 
-class BlogQuery(graphene.ObjectType):
+class Blog(relay.Node):
     my_str = graphene.StringField()
     article = graphene.Field(Article, args={'local_id': graphene.Int().NonNull})
     article2 = graphene.Field(Article, args={'local_id': graphene.Int().NonNull},
@@ -70,8 +70,12 @@ class BlogQuery(graphene.ObjectType):
     def resolve_articles(self, args, info):
         return models.Article.objects.filter()
 
+    @classmethod
+    def get_node(cls, id):
+        return cls(id=id)
+
 
 class BlogMutation(graphene.ObjectType):
     pass
 
-local_schema = SimpleLazyObject(lambda: graphene.Schema(query=viewer_query(BlogQuery)))
+local_schema = SimpleLazyObject(lambda: graphene.Schema(query=user_wrapped_query(Blog)))

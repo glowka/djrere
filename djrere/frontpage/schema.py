@@ -7,7 +7,7 @@ from graphql_relay import from_global_id, to_global_id
 from graphql_relay.connection.arrayconnection import offset_to_cursor
 
 from . import models
-from ..utils.query import viewer_query
+from ..utils.query import user_wrapped_query
 
 
 class Connection(relay.Connection):
@@ -68,7 +68,7 @@ class MyObject(graphene.ObjectType):
         return len(self._root)
 
 
-class Query(graphene.ObjectType):
+class Frontpage(relay.Node):
     my_str = graphene.Field(MyObject)
 
     page_link = relay.NodeField(PageLink)
@@ -86,6 +86,10 @@ class Query(graphene.ObjectType):
     def resolve_all_page_comments(self, args, info):
         return models.PageComment.objects.all()
 
+    @classmethod
+    def get_node(cls, id):
+        return cls(id=id)
+
 
 class AddPageComment(relay.ClientIDMutation):
     class Input(object):
@@ -99,19 +103,19 @@ class AddPageComment(relay.ClientIDMutation):
 
     @classmethod
     def mutate_and_get_payload(cls, input, info):
-        try:
-            schema = info.schema.graphene_schema
+        schema = info.schema.graphene_schema
 
-            link_global_id = input.get('link_id')
-            link_id = from_global_id(link_global_id).id
-            offset = schema.execute('query {viewer { pageLink(id: "%s") { pageComments {count}}}}' % link_global_id) \
-                .data['viewer']['pageLink']['pageComments']['count']
+        link_global_id = input.get('link_id')
+        link_id = from_global_id(link_global_id).id
+        offset = schema.execute(
+            'query { user { frontpage { pageLink(id: "%s") { pageComments {count} } } } }' % link_global_id,
+            root=info.root_value
+        ).data['user']['frontpage']['pageLink']['pageComments']['count']
 
-            comment_model = models.PageComment.objects.create(content=input.get('content'), link_id=link_id)
-            comment = PageComment(comment_model)
-            link_model = models.PageLink.objects.get(pk=link_id)
-        except Exception as e:
-            print(e)
+        comment_model = models.PageComment.objects.create(content=input.get('content'), link_id=link_id)
+        comment = PageComment(comment_model)
+        link_model = models.PageLink.objects.get(pk=link_id)
+
         return cls(success=True,
                    page_comment=comment,
                    page_comment_edge=PageComment.get_edge_type()(node=comment,
@@ -123,20 +127,20 @@ class AddPageLink(relay.ClientIDMutation):
     class Input(object):
         href = graphene.String().NonNull
         description = graphene.String()
-        viewer = graphene.String().NonNull
+        user = graphene.String().NonNull
 
     success = graphene.Boolean()
     page_link_edge = graphene.Field(PageLink.get_edge_type().for_node(PageLink))
     link = graphene.Field(PageLink)
-    viewer = graphene.Field('ViewerQuery')
+    frontpage = graphene.Field('Frontpage')
 
     @classmethod
     def mutate_and_get_payload(cls, input, info):
         schema = info.schema.graphene_schema
 
-        viewer_id = from_global_id(input.get('viewer')).id
-        ViewerQuery = schema.get_type('ViewerQuery')
-        offset = schema.execute('query {viewer { allPageLinks {count}}}').data['viewer']['allPageLinks']['count']
+        user_id = from_global_id(input.get('user')).id
+        Frontpage = schema.get_type('Frontpage')
+        offset = schema.execute('query {user { frontpage { allPageLinks {count}}}}', root=info.root_value).data['user']['frontpage']['allPageLinks']['count']
 
         link_model = models.PageLink.objects.create(href=input.get('href'), description=input.get('description'))
         link = PageLink(link_model)
@@ -144,32 +148,32 @@ class AddPageLink(relay.ClientIDMutation):
                    link=link,
                    page_link_edge=PageLink.get_edge_type().for_node(PageLink)(node=link,
                                                                               cursor=offset_to_cursor(offset)),
-                   viewer=ViewerQuery(id=viewer_id)
+                   frontpage=Frontpage(id=user_id)
                    )
 
 
 class DeletePageLink(relay.ClientIDMutation):
     class Input(object):
         page_link = graphene.String().NonNull
-        viewer = graphene.String().NonNull
+        user = graphene.String().NonNull
 
     success = graphene.Boolean()
     deletedPageLinks = graphene.List(graphene.String())
-    viewer = graphene.Field('ViewerQuery')
+    frontpage = graphene.Field('Frontpage')
 
     @classmethod
     def mutate_and_get_payload(cls, input, info):
-        viewer_id = from_global_id(input.get('viewer')).id
+        user_id = from_global_id(input.get('user')).id
 
         page_link_id = from_global_id(input.get('page_link')).id
         models.PageLink.objects.filter(pk=page_link_id).delete()
 
         schema = info.schema.graphene_schema
-        ViewerQuery = schema.get_type('ViewerQuery')
+        User = schema.get_type('User')
 
         return cls(success=True,
                    deletedPageLinks=[to_global_id(PageLink.__name__, page_link_id)],
-                   viewer=ViewerQuery(id=viewer_id)
+                   frontpage=Frontpage(id=user_id)
                    )
 
 
@@ -179,4 +183,4 @@ class Mutation(graphene.ObjectType):
     delete_page_link = graphene.Field(DeletePageLink)
 
 
-local_schema = SimpleLazyObject(lambda: graphene.Schema(query=viewer_query(Query), mutation=Mutation))
+local_schema = SimpleLazyObject(lambda: graphene.Schema(query=user_wrapped_query(Frontpage), mutation=Mutation))

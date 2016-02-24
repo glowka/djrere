@@ -4,17 +4,34 @@ import Footer from './Footer';
 import Header from './Header';
 import Article from './Article';
 
+import { fixObjKey } from '../../utils/relay-fixes';
+
 
 class Blog extends Component {
   static propTypes = {
-    viewer: React.PropTypes.object.isRequired
+    user: React.PropTypes.object.isRequired
   };
+
+  fixRelayProps(props) {
+    // Looks like relay is buggy here, fixing by setting proper key
+    fixObjKey(props.blog, 'articles')
+  }
+
+  componentWillMount() {
+    this.fixRelayProps(this.props)
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    this.fixRelayProps(nextProps)
+  }
+
+
   render() {
     return (
       <div>
         <Header />
         <ul>
-          {this.props.viewer.blog.articles.edges.map(
+          {this.props.user.blog.articles.edges.map(
             ({ node: article }) => <Article article={article} key={article.id} />
           )}
           {this.props.children}
@@ -28,8 +45,8 @@ class Blog extends Component {
 
 export default Relay.createContainer(Blog, {
   fragments: {
-    viewer: () => Relay.QL`
-      fragment on ViewerQuery {
+    user: () => Relay.QL`
+      fragment on User {
         blog {
           articles(first: 100) {
             edges {

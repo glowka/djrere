@@ -1,13 +1,13 @@
 import Blog from './components/Blog';
 import Child from './components/Child';
 import BlogRoot from './components/BlogRoot';
-import ViewerQueries from './queries/ViewerQueries';
+import UserQueries from './queries/UserQueries';
 
 
 export default [
   { path: '/blog/',
     component: Blog,
-    queries: ViewerQueries,
+    queries: UserQueries,
 
     //indexRoute: { component: BlogRoot }
     childRoutes: [

@@ -19,7 +19,7 @@ class SchemaTests(GraphTestMixin, TestCase):
         article_gid = to_global_id('ArticleNode', article.pk)
         query = '''
             query ShowArticle {
-                viewer {
+                user {
                     articleNode(id: "%s") {
                         id,
                         title,
@@ -29,7 +29,7 @@ class SchemaTests(GraphTestMixin, TestCase):
             }
             ''' % article_gid
         expected = {
-            'viewer': {
+            'user': {
                 "articleNode": {
                   "id": article_gid,
                   "title": article.title,
