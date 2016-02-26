@@ -8,7 +8,7 @@ export default Relay.injectNetworkLayer(
     credentials: 'same-origin',
     // We do some sensitive operations using this api, so always pass csrf header
     headers: {
-      'X-CSRFToken': djTemplateContext.csrftoken || '',
-    },
+      'X-CSRFToken': djTemplateContext.csrftoken || ''
+    }
   })
 );

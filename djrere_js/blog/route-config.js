@@ -9,9 +9,9 @@ export default [
     component: Blog,
     queries: UserQueries,
 
-    //indexRoute: { component: BlogRoot }
+    //indexRoute: { component: Blog }
     childRoutes: [
-      { path: 'child/', component: Child },
+      { path: 'child', component: Child },
     ]
     //  { path: 'inbox',
     //    component: Inbox,

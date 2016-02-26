@@ -10,8 +10,8 @@ export default class Header extends Component {
       <header>
 
         Ordinary header
-        <Link to="../">Blog</Link>
-        <Link to="./child/">Child</Link>
+        <Link to="/blog/">Blog</Link>
+        <Link to="/blog/child">Child</Link>
       </header>
     );
   }

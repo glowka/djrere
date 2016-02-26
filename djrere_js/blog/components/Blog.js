@@ -14,7 +14,7 @@ class Blog extends Component {
 
   fixRelayProps(props) {
     // Looks like relay is buggy here, fixing by setting proper key
-    fixObjKey(props.blog, 'articles')
+    fixObjKey(props.user.blog, 'articles')
   }
 
   componentWillMount() {

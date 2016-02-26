@@ -78,7 +78,7 @@ class Frontpage(relay.Node):
     all_page_comments = relay.ConnectionField(PageComment)
 
     def resolve_my_str(self, args, info):
-        return 'fdsfsd'
+        return 'my_str'
 
     def resolve_all_page_links(self, args, info):
         return models.PageLink.objects.all()
@@ -89,6 +89,10 @@ class Frontpage(relay.Node):
     @classmethod
     def get_node(cls, id):
         return cls(id=id)
+
+    @classmethod
+    def get_from_user_id(cls, user_id):
+        return cls(id=user_id)
 
 
 class AddPageComment(relay.ClientIDMutation):
@@ -107,6 +111,7 @@ class AddPageComment(relay.ClientIDMutation):
 
         link_global_id = input.get('link_id')
         link_id = from_global_id(link_global_id).id
+        # TODO: too complicated, anti-pattern and prone to mistakes way of getting offset
         offset = schema.execute(
             'query { user { frontpage { pageLink(id: "%s") { pageComments {count} } } } }' % link_global_id,
             root=info.root_value
@@ -140,7 +145,12 @@ class AddPageLink(relay.ClientIDMutation):
 
         user_id = from_global_id(input.get('user')).id
         Frontpage = schema.get_type('Frontpage')
-        offset = schema.execute('query {user { frontpage { allPageLinks {count}}}}', root=info.root_value).data['user']['frontpage']['allPageLinks']['count']
+
+        # TODO: too complicated, anti-pattern and prone to mistakes way of getting offset
+        offset = schema.execute(
+            'query { user { frontpage { allPageLinks { count } } } }',
+            root=info.root_value
+        ).data['user']['frontpage']['allPageLinks']['count']
 
         link_model = models.PageLink.objects.create(href=input.get('href'), description=input.get('description'))
         link = PageLink(link_model)
@@ -148,7 +158,7 @@ class AddPageLink(relay.ClientIDMutation):
                    link=link,
                    page_link_edge=PageLink.get_edge_type().for_node(PageLink)(node=link,
                                                                               cursor=offset_to_cursor(offset)),
-                   frontpage=Frontpage(id=user_id)
+                   frontpage=Frontpage.get_from_user_id(user_id)
                    )
 
 
@@ -169,11 +179,11 @@ class DeletePageLink(relay.ClientIDMutation):
         models.PageLink.objects.filter(pk=page_link_id).delete()
 
         schema = info.schema.graphene_schema
-        User = schema.get_type('User')
+        Frontpage = schema.get_type('Frontpage')
 
         return cls(success=True,
                    deletedPageLinks=[to_global_id(PageLink.__name__, page_link_id)],
-                   frontpage=Frontpage(id=user_id)
+                   frontpage=Frontpage.get_from_user_id(user_id)
                    )
 
 

@@ -1,5 +1,6 @@
 import Relay from 'react-relay';
 
+
 export default class AddPageLinkMutation extends Relay.Mutation {
   static fragments = {
     user: () => Relay.QL`

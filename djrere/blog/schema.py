@@ -74,6 +74,10 @@ class Blog(relay.Node):
     def get_node(cls, id):
         return cls(id=id)
 
+    @classmethod
+    def get_from_user_id(cls, user_id):
+        return cls(id=user_id)
+
 
 class BlogMutation(graphene.ObjectType):
     pass
