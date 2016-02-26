@@ -5,9 +5,11 @@ export default class AddPageLinkMutation extends Relay.Mutation {
     user: () => Relay.QL`
       fragment on User {
         id,
-        frontpage {
-          id
-        }
+      }
+    `,
+    frontpage: () => Relay.QL`
+      fragment on Frontpage {
+        id
       }
     `
   };
@@ -37,18 +39,17 @@ export default class AddPageLinkMutation extends Relay.Mutation {
       {
         type: 'RANGE_ADD',
         parentName: 'frontpage',
-        parentID: this.props.user.frontpage.id,
+        parentID: this.props.frontpage.id,
         connectionName: 'allPageLinks',
         edgeName: 'pageLinkEdge',
         rangeBehaviors: {
-          '': 'append',
+          '': 'append'
         }
       }
     ];
   }
 
   getVariables() {
-    console.log(this.props.user);
     return {
       href: this.props.href,
       description: this.props.description || '',

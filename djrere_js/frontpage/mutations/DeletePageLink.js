@@ -1,14 +1,16 @@
 import Relay from 'react-relay';
 
 
-export default class AddPageLinkMutation extends Relay.Mutation {
+export default class DeletePageLink extends Relay.Mutation {
   static fragments = {
     user: () => Relay.QL`
       fragment on User {
         id
-        frontpage {
-          id
-        }
+      }
+    `,
+    frontpage: () => Relay.QL`
+      fragment on Frontpage {
+        id
       }
     `,
     pageLink: () => Relay.QL`
@@ -38,7 +40,7 @@ export default class AddPageLinkMutation extends Relay.Mutation {
       {
         type: 'NODE_DELETE',
         parentName: 'frontpage',
-        parentID: this.props.user.frontpage.id,
+        parentID: this.props.frontpage.id,
         connectionName: 'allPageLinks',
         deletedIDFieldName: 'deletedPageLinks'
       }

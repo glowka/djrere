@@ -23,7 +23,6 @@ export default class LikePageLink extends Relay.Mutation {
       fragment on LikePageLink {
         likedPageLink {
           likesNum
-          id
         }
       }
     `;

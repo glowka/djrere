@@ -27,18 +27,22 @@ class LandingPage extends Component {
   };
 
   addPageLink({ inputValue }) {
+    console.log(this.props.user);
     Relay.Store.commitUpdate(
       new AddPageLinkMutation({
         user: this.props.user,
+        frontpage: this.props.user.frontpage,
         href: inputValue
       })
     );
   }
 
   deletePageLink({ link }) {
+    console.log(link);
     Relay.Store.commitUpdate(
       new DeletePageLinkMutation({
         user: this.props.user,
+        frontpage: this.props.user.frontpage,
         pageLink: link
       })
     );
@@ -96,6 +100,8 @@ export default Relay.createContainer(LandingPage, {
               }
             }
           }
+          ${AddPageLinkMutation.getFragment('frontpage')}
+          ${DeletePageLinkMutation.getFragment('frontpage')}
         }
         ${AddPageLinkMutation.getFragment('user')}
         ${DeletePageLinkMutation.getFragment('user')}
