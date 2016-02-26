@@ -2,6 +2,7 @@ import keycode from 'keycode';
 import React, { Component } from 'react';
 import Relay from 'react-relay';
 import AddPageCommentMutation from '../mutations/AddPageComment';
+import LikePageLinkMutation from '../mutations/LikePageLink';
 import PageComment from './PageComment';
 
 import { fixObjKey } from '../../utils/relay-fixes';
@@ -36,6 +37,14 @@ class PageLink extends Component {
     );
   }
 
+  likePageLink() {
+    Relay.Store.commitUpdate(
+      new LikePageLinkMutation({
+        pageLink: this.props.pageLink
+      })
+    )
+  }
+
   fixRelayProps(props) {
     // Looks like relay is buggy here, fixing by setting proper key
     fixObjKey(props.pageLink, 'pageComments')
@@ -49,13 +58,14 @@ class PageLink extends Component {
     this.fixRelayProps(nextProps)
   }
 
-
   render() {
     const { pageLink } = this.props;
     return (
       <div className="PageLink-wrapper">
         <a href={pageLink.href}>Link to <b>{pageLink.href}</b> with #{pageLink.id}</a>
         <span onClick={() => this.props.handleDelete({ link: pageLink })}>delete me</span>
+        <span>{pageLink.likesNum} likes </span>
+        <span onClick={this.likePageLink.bind(this)}>like me</span>
         {this.props.pageLink.pageComments.edges.map(
           ({ node: pageComment }) => <PageComment pageComment={pageComment} key={pageComment.id} />
         )}
@@ -77,6 +87,7 @@ export default Relay.createContainer(PageLink, {
       fragment on PageLink {
         id,
         href,
+        likesNum
         pageComments(last: 10) {
           edges {
             node {
@@ -85,6 +96,7 @@ export default Relay.createContainer(PageLink, {
           }
         },
         ${AddPageCommentMutation.getFragment('pageLink')},
+        ${LikePageLinkMutation.getFragment('pageLink')},
       }
     `
   }

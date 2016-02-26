@@ -40,6 +40,7 @@ class PageComment(DjangoNode):
 class PageLink(DjangoNode):
     href = graphene.String()
     description = graphene.String()
+    likes_num = graphene.Int()
     page_comments = relay.ConnectionField(PageComment)
 
     connection_type = Connection
@@ -52,6 +53,9 @@ class PageLink(DjangoNode):
 
     def resolve_description(self, args, info):
         return self.instance.description
+
+    def resolve_likes_num(self, args, info):
+        return self.instance.likes_num
 
     def resolve_page_comments(self, args, info):
         return self.instance.page_comments.all()
@@ -187,10 +191,30 @@ class DeletePageLink(relay.ClientIDMutation):
                    )
 
 
+class LikePageLink(relay.ClientIDMutation):
+    class Input(object):
+        page_link = graphene.String().NonNull
+
+    success = graphene.Boolean()
+    liked_page_link = graphene.Field(PageLink)
+
+    @classmethod
+    def mutate_and_get_payload(cls, input, info):
+        page_link_id = from_global_id(input.get('page_link')).id
+        page_link = models.PageLink.objects.get(pk=page_link_id)
+
+        page_link.likes_num += 1
+        page_link.save()
+
+        return cls(success=True,
+                   liked_page_link=PageLink(page_link)
+                   )
+
+
 class Mutation(graphene.ObjectType):
     add_page_comment = graphene.Field(AddPageComment)
     add_page_link = graphene.Field(AddPageLink)
     delete_page_link = graphene.Field(DeletePageLink)
-
+    like_page_link = graphene.Field(LikePageLink)
 
 local_schema = SimpleLazyObject(lambda: graphene.Schema(query=user_wrapped_query(Frontpage), mutation=Mutation))

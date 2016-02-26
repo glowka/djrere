@@ -9,3 +9,4 @@ class PageComment(models.Model):
 class PageLink(models.Model):
     href = models.CharField(max_length=255)
     description = models.TextField()
+    likes_num = models.IntegerField(default=0)
