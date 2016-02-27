@@ -27,21 +27,24 @@ class User(DjangoNode):
         if user is None:
             raise ValueError('root_value misses user data')
 
-        if not user.is_authenticated():
-            # Continue as anonymous user, fake id
-            return get_user_model()(id=-1)
+        if settings.DEBUG and user_id is not None:
+            return get_user_model().objects.get(pk=user_id)
 
-        if not settings.DEBUG and user_id is not None and user.pk != id:
+        if not user.is_authenticated():
+            raise PermissionDenied('only authenticated user can access User node')
+
+        if user_id is not None and user.pk != user_id:
             raise PermissionDenied('passed id does not match user id passed by root_value ')
         return user
 
 
 class Query(graphene.ObjectType):
+    user = graphene.Field(User, args={'id': graphene.Int()})
     node = relay.NodeField(relay.Node)
-    user = graphene.Field(User)
 
+    # noinspection PyMethodMayBeStatic
     def resolve_user(self, args, info):
-        return User.get_from_root_value(info)
+        return User.get_from_root_value(info, user_id=args.get('id', None))
 
 
 class Mutation(FrontpageMutation):
