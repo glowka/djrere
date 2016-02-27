@@ -9,6 +9,7 @@ var baseDir = baseConfig.localConsts.baseDir;
 var host = 'http://localhost:3000';
 
 baseConfig.entry.frontpage.push('webpack-hot-middleware/client?path=' + host + '/__webpack_hmr');
+baseConfig.entry.blog.push('webpack-hot-middleware/client?path=' + host + '/__webpack_hmr');
 
 baseConfig.module.loaders.push(
   // CSS

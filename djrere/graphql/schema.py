@@ -1,38 +1,39 @@
 import graphene
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import PermissionDenied
 from graphene import relay
+from graphene.contrib.django import DjangoNode
 
 from ..blog.schema import Blog
 from ..frontpage.schema import Frontpage, Mutation as FrontpageMutation
 
 
-class User(relay.Node):
+class User(DjangoNode):
     blog = graphene.Field(Blog, resolver=(lambda self, args, info: Blog.get_from_user_id(user_id=self.id)))
     frontpage = graphene.Field(Frontpage, resolver=(lambda self, args, info: Frontpage.get_from_user_id(user_id=self.id)))
 
+    class Meta:
+        model = get_user_model()
+        only_fields = ['id', 'email', 'username']
+
     @classmethod
-    def get_node(cls, id, info):
-        return cls.get_from_root_value(info, user_id=id)
+    def get_node(cls, id, info=None):
+        return cls.get_from_root_value(info, id)
 
     @classmethod
     def get_from_root_value(cls, info, user_id=None):
-        user = info.root_value.get('user', None)
+        user = info.root_value.get('user', None) if info else None
         if user is None:
             raise ValueError('root_value misses user data')
-        user_model = get_user_model()
 
         if not user.is_authenticated():
-            # Continue as anonymous user
-            return cls(id=-1)
+            # Continue as anonymous user, fake id
+            return get_user_model()(id=-1)
 
-        if id is not None and user.pk != id:
+        if not settings.DEBUG and user_id is not None and user.pk != id:
             raise PermissionDenied('passed id does not match user id passed by root_value ')
-
-        try:
-            return cls(user, id=user.pk)
-        except user_model.DoesNotExist:
-            raise ValueError('user passed by root_value does not exist')
+        return user
 
 
 class Query(graphene.ObjectType):

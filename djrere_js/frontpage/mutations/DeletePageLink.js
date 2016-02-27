@@ -36,6 +36,7 @@ export default class DeletePageLink extends Relay.Mutation {
   }
 
   getConfigs() {
+    console.log(this.props.pageLink);
     return [
       {
         type: 'NODE_DELETE',

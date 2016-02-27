@@ -3,9 +3,7 @@ import React, { Component } from 'react';
 import Relay from 'react-relay';
 import PageLink from './PageLink';
 import AddPageLinkMutation from '../mutations/AddPageLink';
-import DeletePageLinkMutation from '../mutations/DeletePageLink';
-
-import { fixObjKey } from '../../utils/relay-fixes';
+import DeletePageLinkMutation from '../mutations/DeletePageLink';;
 
 
 class LandingPage extends Component {
@@ -27,7 +25,6 @@ class LandingPage extends Component {
   };
 
   addPageLink({ inputValue }) {
-    console.log(this.props.user);
     Relay.Store.commitUpdate(
       new AddPageLinkMutation({
         user: this.props.user,
@@ -38,7 +35,6 @@ class LandingPage extends Component {
   }
 
   deletePageLink({ link }) {
-    console.log(link);
     Relay.Store.commitUpdate(
       new DeletePageLinkMutation({
         user: this.props.user,
@@ -47,20 +43,6 @@ class LandingPage extends Component {
       })
     );
   }
-
-  fixRelayProps(props) {
-    // Looks like relay is buggy here, fixing by setting proper key
-    fixObjKey(props.user.frontpage, 'allPageLinks')
-  }
-
-  componentWillMount() {
-    this.fixRelayProps(this.props)
-  }
-
-  componentWillUpdate(nextProps, nextState) {
-    this.fixRelayProps(nextProps)
-  }
-
 
   render() {
     return (

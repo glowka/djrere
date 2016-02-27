@@ -4,27 +4,11 @@ import Footer from './Footer';
 import Header from './Header';
 import Article from './Article';
 
-import { fixObjKey } from '../../utils/relay-fixes';
-
 
 class Blog extends Component {
   static propTypes = {
     user: React.PropTypes.object.isRequired
   };
-
-  fixRelayProps(props) {
-    // Looks like relay is buggy here, fixing by setting proper key
-    fixObjKey(props.user.blog, 'articles')
-  }
-
-  componentWillMount() {
-    this.fixRelayProps(this.props)
-  }
-
-  componentWillUpdate(nextProps, nextState) {
-    this.fixRelayProps(nextProps)
-  }
-
 
   render() {
     return (
@@ -32,7 +16,7 @@ class Blog extends Component {
         <Header />
         <ul>
           {this.props.user.blog.articles.edges.map(
-            ({ node: article }) => <Article article={article} key={article.id} />
+            ({ node: article }) => <Article article={article} key={"article" + article.id} />
           )}
           {this.props.children}
         </ul>
